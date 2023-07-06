@@ -1,45 +1,36 @@
+import javax.sql.rowset.serial.SQLInputImpl;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
-public class Main{
+public class Main {
+    public static void main(String[] args) throws IOException {
 
-	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
-		
-		int N = sc.nextInt(); //데이터의 개수
-		int M =  sc.nextInt(); //총 몇번 실행
-		
-		long num[] = new long[N];
-		for(int k=0; k<N; k++)
-			num[k] = sc.nextLong();
-		
-		int [] i = new int[M];
-		int [] j = new int[M];
-		
-		for(int k=0; k<i.length; k++) {
-			i[k] = sc.nextInt();
-			j[k] = sc.nextInt();
-		}
-		
-		//구간 합 구하기
-		long [] sum = new long[N];
-		sum[0] = num[0];
-		for(int k=1; k< sum.length; k++) {
-			sum[k] = sum[k-1] + num[k];
-		}
-		
-		//특정 i,j의 구간합 구하기
-		long result[] = new long[M];
-		for(int k=0; k< result.length; k++) {
-			if(i[k] ==1) 
-				result[k] = sum[j[k]-1];
-			else
-				result[k] = sum[j[k]-1] - sum[i[k]-2];
-			System.out.println(result[k]);
-		}
-		
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stringTokenizer =
+                new StringTokenizer(bufferedReader.readLine());
+        int N = Integer.parseInt(stringTokenizer.nextToken());
+        int M = Integer.parseInt(stringTokenizer.nextToken());
 
-		
-	}
+        // 구간 합 배열 선언
+        long [] S = new long[N+1];
+        stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+        S[0] = 0;
 
+        for(int i= 1; i<N+1; i++){
+            // 구간 합 구하기
+            S[i] = S[i-1] + Integer.parseInt(stringTokenizer.nextToken());
+        }
+
+        for(int p=0; p<M; p++){
+            stringTokenizer = new StringTokenizer(bufferedReader.readLine());
+            int i = Integer.parseInt(stringTokenizer.nextToken());
+            int j = Integer.parseInt(stringTokenizer.nextToken());
+
+            System.out.println(S[j] - S[i-1]);
+        }
+
+    }
 }
