@@ -1,61 +1,76 @@
-import org.w3c.dom.Node;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-import java.io.*;
-import java.sql.Array;
-import java.util.*;
 
 
 public class Main {
-    static class Node{
-        int node; Node left; Node right;
-
-        Node(int node){
-            this.node = node;
-        }
-        Node(int node, Node left, Node right){
-            this.node = node;
-            this.left = left;
-            this.right = right;
-        }
-
-        void insert(int num){
-            if(num < this.node)
-                if(this.left == null)
-                    this.left = new Node(num);
-                else
-                    this.left.insert(num);
-            else{
-                if(this.right == null)
-                    this.right = new Node(num);
-                else
-                    this.right.insert(num);
-
-            }
-        }
-
-    }
+    static Node root;
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String strN;
 
-        Node root = new Node(Integer.parseInt(br.readLine()));
-        String str;
-        while(true){
-            str = br.readLine();
-            if(str == null || str.equals(""))
-                break;
+        // 입력 데이터가 없을 때까지 입력 받음
+        while((strN = br.readLine()) != null && !strN.isEmpty()){
+            if(root == null){
+                // root 생성
+                root = new Node(Integer.parseInt(strN));
+                continue;
+            }
 
-            root.insert(Integer.parseInt(str));
+            Node curNode = new Node(Integer.parseInt(strN));
+            insertNode(root, curNode);
         }
+
+        // 후위 순회
         postOrder(root);
+
+        br.close();
+    }
+
+    static void insertNode(Node root, Node insertedNode){
+        // 왼쪽으로
+        if(root.value > insertedNode.value){
+            if(root.left == null){
+                root.left = insertedNode;
+                return;
+            }
+            insertNode(root.left, insertedNode);
+        }
+
+        // 오른쪽으로
+        else if(root.value < insertedNode.value){
+            if(root.right == null){
+                root.right = insertedNode;
+                return;
+            }
+            insertNode(root.right, insertedNode);
+        }
     }
 
     static void postOrder(Node node){
-        if(node == null)
-            return;
-
-        postOrder(node.left);
-        postOrder(node.right);
-        System.out.println(node.node);
+        if(node.left != null){
+            postOrder(node.left);
+        }
+        if(node.right != null){
+            postOrder(node.right);
+        }
+        System.out.println(node.value);
     }
+
 }
+
+class Node{
+    int value;
+    Node left;
+    Node right;
+
+    Node(int value){
+        this.value=  value;
+    }
+
+
+}
+
+
