@@ -8,8 +8,8 @@ public class Main {
     public static BufferedReader br;
     public long result;
     public int N;
-    public int [] oil;
-    public int [] load;
+    public long [] oil;
+    public long [] load;
 
     public Main(){
         if(br == null){
@@ -24,8 +24,8 @@ public class Main {
     }
     public void input () throws IOException {
         N = Integer.parseInt(br.readLine());
-        load = new int[N];
-        oil = new int[N];
+        load = new long[N];
+        oil = new long[N];
 
         int i =0;
         StringTokenizer st = new StringTokenizer(br.readLine());
