@@ -24,8 +24,8 @@ public class Main {
             for(int i=0; i<N; i++) {
                 nums[0][i] = Integer.parseInt(st1.nextToken());
                 nums[1][i] = Integer.parseInt(st2.nextToken());
-                dp[0][i] = nums[0][i];
-                dp[1][i] = nums[1][i];
+//                dp[0][i] = nums[0][i];
+//                dp[1][i] = nums[1][i];
             }
 
             /* solution */
@@ -63,7 +63,8 @@ public class Main {
 
             //max값 찾기
             int max = 0;
-            for(int i=0; i<N; i++) {
+            for(int i=N-2; i<N; i++) {
+                if(i <0) continue;
                 int num = Math.max(dp[0][i], dp[1][i]);
                 max = Math.max(max, num);
             }
