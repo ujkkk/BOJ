@@ -20,7 +20,6 @@ public class Main {
         br = new BufferedReader(new InputStreamReader(System.in));
         bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        boolean isOk = false;
 
         int R = Integer.parseInt(st.nextToken());
         int C = Integer.parseInt(st.nextToken());
@@ -36,7 +35,6 @@ public class Main {
             for (int c = 0; c < C; c++) {
                 if (info[c].equals("O")) {
                     isBomp[r][c] = true;
-                    isOk = true;
                 } else {
                     isBomp[r][c] = false;
                 }
@@ -52,7 +50,6 @@ public class Main {
                     for (int c = 0; c < isBomp[0].length; c++) {
                         if (!isBomp[r][c]) { // 폭탄이 없으면 설치
                             isBomp[r][c] = true;
-                            que.add(new Point(r, c));
                         } else {
                             isImminent.add(new Point(r, c)); // 곧 터질 폭탄
                         }
@@ -71,9 +68,7 @@ public class Main {
                     }
                 }
             }
-
         }
-
         print();
     }
 
