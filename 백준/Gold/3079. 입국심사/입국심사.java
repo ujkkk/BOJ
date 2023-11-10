@@ -1,4 +1,5 @@
 
+// BinarySearch
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,7 +27,7 @@ public class Main {
         long right = (max_value) * 1000000000L;
 
         long ans = 0L;
-        while (left<= right){
+        while (left< right){
             long mid = (left+right) / 2;
             
             // mid초 일 때 각 입국 심사대에서 보낼 수 있는 수를 카운트 해줌
@@ -40,15 +41,15 @@ public class Main {
             
             // 비교 후 탐색 범위 변경
             if(cnt >= m){
-             
-                right = mid-1;
+                right = mid;
+                
             }  else if (cnt < m){
                 left = mid +1;
 
             }
         }
 
-        System.out.println(right+1);
+        System.out.println(right);
 
     }
 }
