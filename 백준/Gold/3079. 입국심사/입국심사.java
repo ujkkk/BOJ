@@ -1,5 +1,4 @@
-// BOJ - 입국심사(3079번)
-// BinarySearch
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,7 +40,7 @@ public class Main {
             
             // 비교 후 탐색 범위 변경
             if(cnt >= m){
-                ans = mid;
+             
                 right = mid-1;
             }  else if (cnt < m){
                 left = mid +1;
@@ -49,7 +48,7 @@ public class Main {
             }
         }
 
-        System.out.println(ans);
+        System.out.println(right+1);
 
     }
 }
