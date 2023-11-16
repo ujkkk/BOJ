@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 
 class Main
 {
+	static boolean isBaecu [][];
 	public static void main(String args[]) throws Exception
 	{
 		
@@ -29,7 +30,8 @@ class Main
 			int K = Integer.parseInt(st.nextToken());
 			
 			// 배추밭 정보 생성
-			boolean isBaecu [][] = new boolean[N+2][M+2];
+			isBaecu = new boolean[N+2][M+2];
+			
 			for(int k=0; k<K; k++) {
 				// 배추 위치 정보
 				st = new StringTokenizer(br.readLine());
@@ -38,49 +40,54 @@ class Main
 				isBaecu[y+1][x+1] = true;
 			}
 			
-			bw.write(getCount(isBaecu) + "\n");
+			bw.write(solution() + "\n");
 		
 			
 		}
 		bw.flush();
 	}
 	
-	public static int getCount(boolean [][] isBaecu) {
-		int [] dx = {0,1,0,-1};
-		int [] dy = {1,0, -1,0};
-		
+	public static int solution(){
 		int row = isBaecu.length;
 		int col = isBaecu[0].length;
-		
 		int count = 0;
-		Queue<Point> que = new LinkedList<>();
+		
 		boolean [][] isVisited = new boolean[row][col];
 		
 		for(int y=1; y<row; y++) {
 			for(int x = 1; x<col; x++) {
 				// 새로운 그룹 발견
 				if(!isVisited[y][x] && isBaecu[y][x] == true) {
+					searchGroup(isVisited, x, y);
 					count++;
-					que.add(new Point(x,y));
-					isVisited[y][x] = true;
-					
-					while(!que.isEmpty()) {
-						Point cur = que.poll();
-						
-						for(int i=0; i<4; i++) {
-							int nextX = cur.x+dx[i];
-							int nextY = cur.y+dy[i];
-					
-							if(!isVisited[nextY][nextX]&& isBaecu[nextY][nextX] == true) {
-								que.add(new Point(nextX, nextY));
-								isVisited[nextY][nextX] = true;
-							}
-						}
-					}
 				}
 			}
 		}
 		return count;
+	}
+	
+	// 한 그룹 탐색
+	public static void searchGroup(boolean [][] isVisited, int x, int y) {
+		Queue<Point> que = new LinkedList<>();
+		int [] dx = {0,1,0,-1};
+		int [] dy = {1,0, -1,0};
+		
+		que.add(new Point(x,y));
+		isVisited[y][x] = true;
+		
+		while(!que.isEmpty()) {
+			Point cur = que.poll();
+			
+			for(int i=0; i<4; i++) {
+				int nextX = cur.x+dx[i];
+				int nextY = cur.y+dy[i];
+		
+				if(!isVisited[nextY][nextX]&& isBaecu[nextY][nextX] == true) {
+					que.add(new Point(nextX, nextY));
+					isVisited[nextY][nextX] = true;
+				}
+			}
+		}
 	}
 
 }
