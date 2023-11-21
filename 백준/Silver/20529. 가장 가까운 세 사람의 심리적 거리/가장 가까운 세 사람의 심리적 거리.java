@@ -15,6 +15,11 @@ public class Main {
 
             int N = Integer.parseInt(br.readLine());
             StringTokenizer st = new StringTokenizer(br.readLine());
+            // 무조건적으로 3명의 MBTI가 겹칠 때
+            if(N >32){
+                bw.write(0+"\n");
+                continue;
+            }
 
             while(st.hasMoreTokens()){
                 String mbti = st.nextToken();
@@ -30,13 +35,16 @@ public class Main {
                     // 중복인데 해당 mbti가 1명뿐이면 패스
                     if(i==j && mbtiContainer.get(existMbtis[i]) == 1)
                         continue;
+                    // 친구 1과 친구 2의 관계
                     int s1ToS2 = getMindDistance(existMbtis[i], existMbtis[j]);
 
                     for(int k=0; k<existMbtis.length; k++){
+                        // 해당 MBTI를 가진 사람이 1명 이하이면 중복은 불가하므로 패스
                         if(i==k && mbtiContainer.get(existMbtis[i]) <= 1)
                             continue;
                         if(j==k && mbtiContainer.get(existMbtis[j]) <= 1)
                             continue;
+                        // 친구 1과 친구 2,친구 3까지 같을 때 해당 mbti를 가진 사람이 3명 미만이면 패스
                         if(i==j && j==k && mbtiContainer.get(existMbtis[i]) <=2)
                             continue;
 
