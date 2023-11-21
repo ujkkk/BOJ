@@ -6,10 +6,8 @@ public class Main {
     static ArrayList<Integer> [] friends;
     static int N;
     static int M;
-    static Stack<Integer> stack;
-    static long kevinValue;
     static int [][] kevinValues;
-    static boolean [] isVisted ;
+    static boolean [] isVisited;
     static int ans;
     static long kevinMin;
     public static void main(String[] args) throws IOException {
@@ -50,6 +48,8 @@ public class Main {
         // 차례대로 케빈 값을 구함
         for(int i=1; i<=N; i++){
             int sum = 0;
+            isVisited = new boolean[N+1];
+            isVisited[i] = true;
             getKevinValues(i);
 
             // 총 케빈 베이컨의 합
@@ -75,12 +75,12 @@ public class Main {
 
         while(!que.isEmpty()){
             Node curNode = que.poll();
-            // 갱신할 수 있을 때만 다시 갱신
-            if(kevinValues[start][curNode.x] > curNode.depth){
-                kevinValues[start][curNode.x] = curNode.depth;
+            kevinValues[start][curNode.x] = curNode.depth;
 
-                for(int friend : friends[curNode.x]){
+            for(int friend : friends[curNode.x]){
+                if(!isVisited[friend]){
                     que.add(new Node(friend, curNode.depth +1));
+                    isVisited[friend] = true;
                 }
             }
         }
