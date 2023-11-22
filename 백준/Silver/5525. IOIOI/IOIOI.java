@@ -11,26 +11,25 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
-        char [] S = br.readLine().toCharArray();
-
-        String IOI = "";
-        for(int i=1; i<= 2*N+1; i++){
-            if(i%2 == 1){
-                IOI += "I";
-                continue;
-            }
-            IOI += "O";
-        }
-
-        char [] tempString = new char[IOI.length()];
+        String S = br.readLine();
 
         int ans = 0;
-        for(int i=0; i<=M-IOI.length(); i++){
-            System.arraycopy(S, i, tempString,0, IOI.length());
-            String temp = new String(tempString);
-            if(temp.equals(IOI))
-                ans++;
+        int i =0;
+        int count = 0;
+        while(i<S.length()-2){
+            if(S.charAt(i)=='I' && S.charAt(i+1)=='O' && S.charAt(i+2)=='I'){
+                i += 2;
+                count++;
+                if(count == N){
+                    ans ++;
+                    count--;
+                }
+                continue;
+            }
+            i++;
+            count = 0;
         }
+
         bw.write(ans +"\n");
         bw.flush();
 
