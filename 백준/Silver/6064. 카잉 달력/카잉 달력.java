@@ -30,9 +30,9 @@ public class Main {
 
     public static int getYear(int M, int N, int x, int y){
         int nextY =y%N;
-        int nextX = x%M;
+        
         while(nextY <= M*N){
-            if((nextY-nextX)%M == 0 && nextY!= 0)
+            if((nextY-x)%M == 0 && nextY!= 0)
                 return nextY;
             nextY += N;
         }
