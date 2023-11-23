@@ -2,11 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
-
     static int [][][] tomato;
-    static boolean isVisited [][][];
-    static int results [][][];
     static Queue<Position> tomatos;
     static int N;
     static int M;
@@ -24,90 +20,62 @@ public class Main {
         // 높이
          H = Integer.parseInt(st.nextToken());
 
-        tomato = new int[H+2][N+2][M+2];
-        results = new int[H+2][N+2][M+2];
-        for(int z =0; z<=H+1; z++){
-            for(int r=0; r<=N+1; r++){
-                for(int c=0; c<=M+1; c++){
-                    tomato[z][r][c] = 999;
-                    results[z][r][c] = Integer.MAX_VALUE;
-                }
-            }
-        }
-        isVisited = new boolean [H+2][N+2][M+2];
+        tomato = new int[H][N][M];
+        // 확인해야할 총 토마토 개수
+        int goal = M*N*H;
 
         // 토마토 입력
         boolean isFull = true;
         tomatos = new LinkedList<>();
 
-        for(int z =1; z<=H; z++){
-            for(int r=1; r<=N; r++){
+        for(int z =0; z<H; z++){
+            for(int r=0; r<N; r++){
                 st = new StringTokenizer(br.readLine());
-                for(int c=1; c<=M; c++){
+                for(int c=0; c<M; c++){
                     tomato[z][r][c] = Integer.parseInt(st.nextToken());
-                    if(isFull && tomato[z][r][c] == 0)
-                        isFull= false;
-
                     if(tomato[z][r][c] == -1){
-                        isVisited[z][r][c] = true;
+                        goal--;
                     }
-
                     // 익은 토마토 넣기
                     if(tomato[z][r][c] == 1){
                         tomatos.add(new Position(r,c,z, 0));
-                        isVisited[z][r][c] = true;
-                        results[z][r][c] = 0;
                     }
                 }
             }
         }
-        if(isFull){
-            bw.write("0");
-        }
-        else{
-            int dx [] = {0,1,0,-1,0,0};
-            int dy [] = {1,0,-1,0,0,0};
-            int dz [] = {0,0,0,0,1, -1};
 
-            while(!tomatos.isEmpty()){
-                Position curPosition = tomatos.poll();
+        int now = 0;
+        int time = 0;
+        int dx [] = {0,1,0,-1,0,0};
+        int dy [] = {1,0,-1,0,0,0};
+        int dz [] = {0,0,0,0,1, -1};
 
-                for(int i=0; i<dx.length; i++){
-                    int nextX = curPosition.x + dx[i];
-                    int nextY = curPosition.y + dy[i];
-                    int nextZ = curPosition.z + dz[i];
-                    int nextCount = curPosition.count +1;
+        while(!tomatos.isEmpty()){
+            Position curPosition = tomatos.poll();
+            time = curPosition.count;
+            now++;
+            for(int i=0; i<dx.length; i++){
+                int nextX = curPosition.x + dx[i];
+                int nextY = curPosition.y + dy[i];
+                int nextZ = curPosition.z + dz[i];
 
-                    if(isRange(nextX,nextY,nextZ) && results[nextZ][nextX][nextY] > nextCount && tomato[nextZ][nextX][nextY] != -1) {
-                        tomatos.add(new Position(nextX, nextY, nextZ, nextCount));
-                        isVisited[nextZ][nextX][nextY] = true;
-                        results[nextZ][nextX][nextY] = nextCount;
+                if(isRange(nextX,nextY,nextZ)) {
+                    // 안 익은 토마토라면 추가
+                    if(tomato[nextZ][nextX][nextY] == 0){
+                        tomato[nextZ][nextX][nextY] = 1;
+                        tomatos.add(new Position(nextX, nextY, nextZ, time+1));
                     }
                 }
             }
-
-            // 모두 익었는지 확인
-            // 결과 확인
-            int result = 0;
-            boolean isOk = true;
-            for(int z =1; z<=H; z++){
-                for(int r=1; r<=N; r++){
-                    for(int c=1; c<=M; c++){
-                        if(!isVisited[z][r][c]){
-                            isOk = false;
-                            break;
-                        }
-                        if(results[z][r][c] != Integer.MAX_VALUE)
-                            result = Math.max(results[z][r][c], result);
-                    }
-                }
-            }
-            if(isOk){
-                bw.write(Integer.toString(result));
-            } else{
-                bw.write(Integer.toString(-1));
-            }
         }
+
+        // 결과 확인
+        if(now == goal){
+            bw.write(Integer.toString(time));
+        } else{
+            bw.write(Integer.toString(-1));
+        }
+
         bw.flush();
 
         bw.close();
@@ -116,7 +84,7 @@ public class Main {
 
 
     public static boolean isRange(int x, int y, int z){
-        if(x>=1 && x<=N && y>=1 && y<=M && z>=1 && z<=H)
+        if(x>=0 && x<N && y>=0 && y<M && z>=0 && z<H)
             return true;
         return false;
     }
