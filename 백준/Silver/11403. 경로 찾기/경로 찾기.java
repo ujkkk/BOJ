@@ -3,39 +3,39 @@ import java.util.*;
 
 public class Main {
     static ArrayList<Integer> [] graph;
-    static int [][] result;
+    static int [][] array;
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
+        // 변수 선언, 초기화
         int N = Integer.parseInt(br.readLine());
-        graph = new ArrayList[N+1];
-        result = new int[N+1][N+1];
-        for(int i=0; i<=N; i++){
-            graph[i] = new ArrayList<>();
-        }
+        array = new int[N+1][N+1];
 
+
+        // 간선 추가
         for(int row=1; row<=N; row++){
             StringTokenizer st= new StringTokenizer(br.readLine());
             for(int col=1; col<=N; col++){
-                int num = Integer.parseInt(st.nextToken());
-                if(num == 1)
-                    graph[row].add(col);
+                array[row][col] = Integer.parseInt(st.nextToken());
             }
         }
 
-        for(int row =1; row<=N; row++){
-            if(graph[row].size() > 0){
-                boolean [] isVisited = new boolean[N+1];
-                BFS(isVisited, row);
+        // i에서 j까지 갈 수 있는가?
+        // i에서 k로 가고, k에서 j로 갈 수 있는가?
+        for(int k=1; k<=N; k++){
+            for(int i=1; i<=N; i++){
+                for(int j=1; j<=N; j++){
+                    if(array[i][k] == 1 && array[k][j] == 1)
+                        array[i][j] = 1;
+                }
             }
-
         }
 
         for(int row=1; row<=N; row++) {
             for (int col = 1; col <= N; col++) {
-                bw.write(result[row][col] +" ");
+                bw.write(array[row][col] +" ");
             }
             bw.write("\n");
         }
@@ -45,21 +45,4 @@ public class Main {
         br.close();
     }
 
-    static void BFS(boolean [] isVisited, int start){
-        Queue<Integer> que = new LinkedList<>();
-        que.add(start);
-
-        while(!que.isEmpty()){
-            int current = que.poll();
-
-            for(int next : graph[current]){
-                if(!isVisited[next]){
-                    que.add(next);
-                    isVisited[next] = true;
-                    result[start][next] = 1;
-                }
-            }
-        }
-
-    }
 }
