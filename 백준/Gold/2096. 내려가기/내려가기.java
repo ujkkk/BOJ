@@ -37,15 +37,15 @@ public class Main {
             int [] preMins = mins.clone();
             for(int i=0; i<3; i++){
                 if(i == 0){
-                    maxs[i] = Math.max(preMaxs[i+1] +  n1, preMaxs[i] +n1);
-                    mins[i] = Math.min(preMins[i+1] +n1, preMins[i] +n1);
+                    maxs[i] = n1 + Math.max( preMaxs[i+1], preMaxs[i]);
+                    mins[i] = n1 + Math.min(preMins[i+1], preMins[i]);
                 }
                 else if(i==1){
-                    maxs[i] =   Math.max(Math.max(preMaxs[i-1] + n2 , preMaxs[i]+ n2), preMaxs[i+1]+ n2);
-                    mins[i] =  Math.min(Math.min(preMins[i-1]  + n2 , preMins[i]  + n2), preMins[i+1] + n2);
+                    maxs[i] =  n2 + Math.max(Math.max(preMaxs[i-1], preMaxs[i]), preMaxs[i+1]);
+                    mins[i] =  n2 + Math.min(Math.min(preMins[i-1], preMins[i]), preMins[i+1]);
                 }else{
-                    maxs[i] = Math.max(preMaxs[i-1] +  n3, preMaxs[i] +n3);
-                    mins[i] = Math.min(preMins[i-1] +n3, preMins[i] +n3);
+                    maxs[i] = n3 + Math.max(preMaxs[i-1], preMaxs[i] );
+                    mins[i] = n3 + Math.min(preMins[i-1], preMins[i]);
                 }
             }
 
