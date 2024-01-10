@@ -11,42 +11,38 @@ class Solution {
             musicList.add( new Music(genres[i], i, plays[i]));
             if(!genreMapping.containsKey(genres[i])){
                 genreMapping.put(genres[i], genreCount);
-                genreList.add(genreCount, new Genre(genres[i], 0));
+                genreList.add(new Genre(genres[i], 0));
                 genreCount++;
             }
             genreList.get(genreMapping.get(genres[i])).addCount(plays[i]);
         }
-        // 내림차순으로 정렬
-        Collections.sort(genreList, new Comparator<Genre>() {
-            @Override
-            public int compare(Genre o1, Genre o2) {
-                return Integer.compare(o2.count ,o1.count);
-            }
-        });
+
+        // genreList는 총 재생 횟수에 따라 내림차순 정렬
+        Collections.sort(genreList, (o1, o2) -> Integer.compare(o2.count ,o1.count));
+
 
         //2. 장르별 순위 매핑
         HashMap<String, Integer> ranking = new HashMap();
         int r = 0;
-        for(int i=0; i<genreList.size(); i++){
+        for(int i=0; i< genreList.size(); i++){
             if(genreList.get(i) == null) break;
+            // 앞에 위치한 장르부터 차례대로 랭킹 매김
             ranking.put(genreList.get(i).name, r++);
         }
 
         // 3. 음악
-        Collections.sort(musicList, new Comparator<Music>(){
-            @Override
-            public int compare(Music o1, Music o2){
-                if(o2.value == o1.value){
-                    // 고유번호 더 낮은게 우선 순위
-                    return o1.index - o2.index;
-                }
-                return Integer.compare(o2.value, o1.value);
+        Collections.sort(musicList, (o1, o2) -> {
+            if(o2.value == o1.value){
+                // 고유번호 더 낮은게 우선 순위
+                return o1.index - o2.index;
             }
+            return Integer.compare(o2.value, o1.value);
         });
 
         int[] arr = new int[200];
         Arrays.fill(arr, -1);
         int count = 0;
+
         for(int i=0; i<plays.length; i++){
             int start = ranking.get(musicList.get(i).genre)*2;
             if(arr[start] == -1){
@@ -66,7 +62,6 @@ class Solution {
                 answer[p++] = arr[i];
             }
         }
-
 
 
         return answer;
