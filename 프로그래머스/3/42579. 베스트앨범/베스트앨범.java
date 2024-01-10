@@ -2,7 +2,7 @@ import java.util.*;
 class Solution {
     public static int[] solution(String[] genres, int[] plays) {
         int genreCount = 0;
-        List<Genre> genreList = new ArrayList<>(100);
+        List<Genre> genreList = new ArrayList<>();
         List<Music> musicList = new ArrayList<>(200);
         HashMap<String, Integer> genreMapping = new HashMap();
 
@@ -44,6 +44,8 @@ class Solution {
         int count = 0;
 
         for(int i=0; i<plays.length; i++){
+            if(count >= genreList.size()*2)
+                break;
             int start = ranking.get(musicList.get(i).genre)*2;
             if(arr[start] == -1){
                 arr[start] = musicList.get(i).index;
