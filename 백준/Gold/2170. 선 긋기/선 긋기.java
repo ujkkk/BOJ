@@ -42,18 +42,16 @@ public class Main {
             // 새로운 선 추가
             if(line.start > end){
                 // 이전의 선 길이 더하기
-                sum += Math.abs(end - start);
+                sum += (end - start);
                 // 새로운 선의 시작점
                 start = line.start;
             }
-            // 기존 선 연장
+            // 현재 줄의 end가 기존 줄의 end보다 크다면 선 연장
             if(line.end > end)
                 end = line.end;
-
         }
-
         // 마지막 선 길이 더하기
-        sum += Math.abs(end - start);
+        sum += (end - start);
         bw.write(sum+"\n");
         bw.flush();
 
