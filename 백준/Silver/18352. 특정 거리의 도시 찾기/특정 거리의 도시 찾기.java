@@ -1,4 +1,3 @@
-import javax.print.DocFlavor;
 import java.io.*;
 import java.util.*;
 
@@ -7,10 +6,9 @@ public class Main {
     static BufferedWriter bw;
     static BufferedReader br;
     static int K, X, N,M;
+    static List<Integer> ans;
     static int [] distance;
-    static TreeSet result;
     static ArrayList<Integer>[] graph;
-    static boolean isfind = false;
 
     public static void main(String[] args) throws IOException {
 
@@ -40,42 +38,48 @@ public class Main {
             // 단방향 간선 추가
             graph[n1].add(n2);
         }
-        
+
+        ans = new ArrayList<>();
         distance = new int[N+1];
-        Arrays.fill(distance, Integer.MAX_VALUE);
+        Arrays.fill(distance, -1);
+        
+        bfs(X);
 
-        boolean[] visited = new boolean[N+1];
-        visited[X] = true;
-        dfs(X, visited, 0);
-
-
-        for(int i=1; i<N+1; i++){
-            if(distance[i] == K){
-                isfind = true;
-                bw.write(i+"\n");
+        if(ans.size() == 0){
+            bw.write("-1");
+        } else{
+            Collections.sort(ans);
+            for(int node : ans){
+                bw.write(node +"\n");
             }
         }
-        if(!isfind)
-            bw.write("-1");
-        
         bw.flush();
         br.close();
         bw.close();
 
     }
+    public static void bfs(int start){
+        Queue<Integer> que = new ArrayDeque<>();
+        que.add(start);
+        distance[start] = 0;
 
-    public static void dfs(int start, boolean[] visited, int depth){
-        distance[start] = depth;
-        if(depth == K){
-            return;
-        }
-
-        for(int child : graph[start]){
-            if(!visited[child] && distance[child] > depth+1){
-                visited[child]= true;
-                dfs(child, visited, depth+1);
-                visited[child] = false;
+        while(!que.isEmpty()){
+            int cur = que.poll();
+            if(distance[cur] > K)
+                continue;
+            if(distance[cur] == K){
+                ans.add(cur);
+                continue;
             }
+
+            for(int child : graph[cur]){
+                // 방문을 하지 않았다면
+                if(distance[child] == -1){
+                    distance[child] = distance[cur] +1;
+                    que.add(child);
+                }
+            }
+
         }
     }
 
