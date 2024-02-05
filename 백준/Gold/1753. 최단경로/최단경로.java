@@ -1,96 +1,103 @@
-import javax.swing.text.html.ListView;
+import javax.print.DocFlavor;
 import java.io.*;
 import java.util.*;
 
+/*
+    위상 정렬 이용 : 선후 관계가 있고, 사이클이 없으면서 순서를 알아야 하기 때문ㅇ
+    입력이 '[시간] [선 건물1] [선 건물2] ... [-1]' 이 주어지기에 구분 필요
+    건물은 동시에 지을 수 있기에 직전 건물까지 걸린 시간을 알고 있어야 함
+ */
 public class Main {
-    public static int [] ans;
-    public static boolean [] isVisited;
-    public static ArrayList<Node>[] trees;
-    public static void main(String [] args) throws IOException{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static BufferedWriter bw;
+    static BufferedReader br;
+    static ArrayList<Node> [] graph;
+    static int V, E;
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int V = Integer.parseInt(st.nextToken());
-        int E = Integer.parseInt(st.nextToken());
 
-        int start = Integer.parseInt(br.readLine());
-        trees = new ArrayList[V+1];
-        ans = new int[V+1];
-        isVisited = new boolean[V+1];
-        for(int i=1; i<=V; i++){
-            trees[i] = new ArrayList<>();
+    public static void main(String[] args) throws IOException {
+
+        StringTokenizer st;
+        br = new BufferedReader(new InputStreamReader(System.in));
+        bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        st = new StringTokenizer(br.readLine());
+        V = Integer.parseInt(st.nextToken());
+        E = Integer.parseInt(st.nextToken());
+
+        graph = new ArrayList[V+1];
+        for(int i= 1; i<=V; i++){
+            graph[i] = new ArrayList<>();
         }
+        // 시작 노드
+        int start = Integer.parseInt(br.readLine());
 
         for(int i=0; i<E; i++){
             st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
-            Node node = new Node(v, w);
-            // 단방향 간선 생성
-            trees[u].add(node);
+
+            graph[u].add(new Node(v, w));
         }
 
-        // 최소 거리를 담을 배열 초기화
+        int [] result = dijkstra(new Node(start, 0));
         for(int i=1; i<=V; i++){
-            ans[i] = Integer.MAX_VALUE;
-        }
-
-        ans[start] = 0;
-        dijkstra(start);
-
-        // 출력
-        for(int i=1; i<=V; i++){
-            if(i == start)
-                bw.write(0+"\n");
-            else if(ans[i] == Integer.MAX_VALUE)
+            if(result[i] == Integer.MAX_VALUE)
                 bw.write("INF\n");
             else
-                bw.write(ans[i]+"\n");
+                bw.write(result[i] +"\n");
         }
 
         bw.flush();
+        br.close();
+        bw.close();
+
     }
 
-    public static void dijkstra(int start){
-        // 가장 가중치가 작은 값을 뽑기 위해 우선순위 큐 사용
-       PriorityQueue<Node> que = new PriorityQueue<>();
-       que.add(new Node(start, 0));
+    public static int [] dijkstra(Node start){
+        boolean [] isVisited = new boolean[V+1];
+        int [] dis = new int[V+1];
+        PriorityQueue<Node> que = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.weight - o2.weight;
+            }
+        });
 
-       while(!que.isEmpty()){
-           // 방문하지 않은 노드 중 가장 적은 노드를 선택한다.
-           Node curNode = que.poll();
-           // 방문한 노드라면 넘어간다
-           if(isVisited[curNode.value])
-               continue;
-           // 방문하지 않은 노드라면 방문한다.
-           isVisited[curNode.value] = true;
+        Arrays.fill(dis, Integer.MAX_VALUE);
+        que.add(start);
+        dis[start.data] = 0;
 
-           // (2) 해당 노드로부터 갈 수 있는 비용을 갱신한다. (작을 때만 갱신)
-           for(Node node : trees[curNode.value]){
-               if(ans[node.value] > ans[curNode.value] + node.weight){
-                   ans[node.value] = ans[curNode.value] + node.weight;
-                   que.add(new Node(node.value, ans[node.value]));
-               }
-           }
-       }
+        while(!que.isEmpty()){
+            Node cur = que.poll();
+            if(isVisited[cur.data])
+                continue;
+
+            isVisited[cur.data] = true;
+            for(Node node : graph[cur.data]){
+                int next = node.data;
+                int weight = node.weight;
+
+                if(dis[next] > dis[cur.data] + weight){
+                    dis[next] = dis[cur.data] + weight;
+                    que.add(new Node(next, dis[next]));
+                }
+            }
+        }
+        return dis;
     }
+
+
 
 }
 
-class Node implements Comparable<Node>{
-    int value;
+class Node{
+    int data;
     int weight;
 
-    public Node(int value, int weight){
-        this.value = value;
+    public Node(int data, int weight){
+        this.data = data;
         this.weight = weight;
     }
 
-
-    @Override
-    public int compareTo(Node o) {
-        return weight - o.weight;
-    }
 }
