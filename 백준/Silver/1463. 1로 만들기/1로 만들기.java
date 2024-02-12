@@ -1,66 +1,40 @@
+import java.io.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.StringTokenizer;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.util.*;
 
-class Main
-{
+public class Main {
 	
+	public static BufferedWriter bw;
+	public static BufferedReader br;
 	
-	public static void main(String args[]) throws Exception
-	{
+	static int [] dp;
+	static int N;
+	
+	public static void main(String[] args) throws Exception {
 		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br  = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 	
-		int N = Integer.parseInt(br.readLine());
-		int [] dp = new int[N+1];
+		N = Integer.parseInt(br.readLine());	
+		dp = new int[N*3+1];
+		Arrays.fill(dp, Integer.MAX_VALUE);
+		dp[1] = 0;
 		
-		if(N==1) {
-			bw.write(0+"\n");
-		}
-		else if(N==2 || N== 3) {
-			bw.write(1+"\n");
-		}
-		else {
-			dp[1] = 0;
-			dp[2] = 1;
-			dp[3] = 1;
-			for(int i=4; i<=N; i++) {
-				if(i%2 ==0 && i%3 == 0) {
-					dp[i] = Math.min(dp[i/2], dp[i/3]);
-					dp[i] = Math.min(dp[i], dp[i-1])+1;
-					continue;
-				}
-				else if(i%2 == 0) {
-					dp[i] = Math.min(dp[i/2], dp[i-1])+1;
-					continue;
-				}
-				else if(i%3 == 0) {
-					dp[i] = Math.min(dp[i/3], dp[i-1])+1;
-					continue;
-				}
-				else
-					dp[i] = dp[i-1]+1;
+		for(int i=2; i<=N; i++) {
+			dp[i] = Math.min(dp[i], dp[i-1]+1);
+			if(i % 2 == 0) {
+				dp[i] = Math.min(dp[i], dp[i/2]+1);
 			}
-			
-			bw.write(dp[N]+"\n");
+			if(i % 3 == 0) {
+				dp[i] = Math.min(dp[i], dp[i/3]+1);
+			}
 		}
-		
-		
-		bw.flush();
-		
-		bw.close();
-		br.close();
+		System.out.print(dp[N]);
+	
+	
 	}
-
-
-
+		
 }
+
 
 
