@@ -1,100 +1,91 @@
-import java.awt.*;
+
 import java.io.*;
 import java.util.*;
 
-
+/*
+ * BFS와DFS로 방문한 순서 출력하
+ */
 public class Main {
+	
+	public static BufferedWriter bw;
+	public static BufferedReader br;
 
-    public static void main(String [] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+	static int N;
+	static int M;
+	static boolean [][] graph;
 
-        // 정점의 수
-        int N = Integer.parseInt(st.nextToken());
-        // 간선의 개수
-        int M = Integer.parseInt(st.nextToken());
-        // 탐색 시작
-        int V = Integer.parseInt(st.nextToken());
+	
+	public static void main(String[] args) throws Exception {
+		
+		br  = new BufferedReader(new InputStreamReader(System.in));
+		bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		 N = Integer.parseInt(st.nextToken());
+		 M = Integer.parseInt(st.nextToken());
+		int start = Integer.parseInt(st.nextToken());
+		
+		graph = new boolean [N+1][N+1];
+		
+		// 간선 정보 입력
+		for(int i=0; i<M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			
+			graph[u][v] = true;
+			graph[v][u] = true;
+			
+		}
+		
+		boolean[] isVisited  = new boolean [N+1];
+		isVisited[start] = true;
+		DFS(start, isVisited);
+		bw.write("\n");
+	
+		isVisited  = new boolean [N+1];
+		BFS(start, isVisited);
+		bw.write("\n");
+		bw.flush();
+	}
+	
+	// DFS 탐색 시작
+	public static void DFS(int start,boolean[] isVisited) throws IOException {
+		bw.write(start+" ");
+		
+		for(int i=1; i<=N; i++) {
+			if(graph[start][i] == false || isVisited[i])
+				continue;
+			
+			isVisited[i] = true;
+			DFS(i, isVisited);
+		}
+		
+	}
+	
+	// BFS 탐색 시작
+	public static void BFS(int start,boolean[] isVisited) throws IOException {
+		Queue<Integer> que = new LinkedList<Integer>();
+		que.add(start);
+		isVisited[start] = true;
+		
+		while(!que.isEmpty()) {
+			int cur = que.poll();
+			bw.write(cur+" ");
+			
+			for(int i=1; i<=N; i++) {
+				if(graph[cur][i] == false || isVisited[i])
+					continue;
+				isVisited[i] = true;
+				que.add(i);
+			}
+		}
+	}
 
-        Graph graph = new Graph(N+1);
-
-        for(int i=0; i< M; i++){
-            st = new StringTokenizer(br.readLine());
-            int v = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
-            graph.addEdge(v,w);
-        }
-
-        for(int i=0; i< N+1; i++){
-            if(graph.adj[i].size() >1 ){
-                // 오름차순 정렬
-                graph.adj[i].sort(Comparator.naturalOrder());
-            }
-        }
-
-        graph.DFS(V);
-        graph.BFS(V);
-    }
-
-
+	
 }
-class Graph{
-    int v;
-    LinkedList []  adj;
-    boolean [] visited;
-    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    Graph(int v){
-        this.v = v;
-        this.visited = new boolean[v+1];
-        adj = new LinkedList[v];
-        for(int i=0; i<v; i++){
-            adj[i] = new LinkedList();
-        }
-    }
 
-    void addEdge(int v, int w){
-        if(!adj[v].contains(w))
-            adj[v].add(w);
-        if(!adj[w].contains(v))
-            adj[w].add(v);
-    }
 
-    void DFS(int value) throws IOException{
-        System.out.print(value+" ");
-        visited[value] = true;
-        Iterator<Integer> iterator =  adj[value].iterator();
-        while (iterator.hasNext()){
-            int n = iterator.next();
-            if(!visited[n]){
-                DFS(n);
-            }
-        }
-    }
 
-    void BFS(int value) throws IOException {
-        boolean [] visited = new boolean[v];
-        LinkedList<Integer> queue = new LinkedList<Integer>();
-        bw.write("\n");
-        visited[value] = true;
-        queue.add(value);
-
-        while(!queue.isEmpty()){
-            int s = queue.poll();
-
-            bw.write(s+" ");
-            Iterator<Integer> iterator = adj[s].iterator();
-            while (iterator.hasNext()){
-                int n = iterator.next();
-                if(!visited[n]){
-                    queue.add(n);
-                    visited[n]= true;
-                }
-            }
-        }
-        bw.write("\n");
-        bw.flush();
-        bw.close();
-    }
-}
 
