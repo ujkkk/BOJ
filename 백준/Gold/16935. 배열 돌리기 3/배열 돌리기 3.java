@@ -122,31 +122,26 @@ public class Main {
         int curC = origin[0].length;
         int [][] newMap = new int [curR][curC];
 
-        int [][] newMap1 = deppCopyPart(origin, 0, curR/2-1, 0, curC/2-1);
-        int [][] newMap2 = deppCopyPart(origin, 0, curR/2-1, curC/2, curC-1);
-        int [][] newMap3 = deppCopyPart(origin, curR/2, curR-1, 0, curC/2-1);
-        int [][] newMap4 = deppCopyPart(origin, curR/2, curR-1, curC/2, curC-1);
-
         int newR = curR/2;
         int newC = curC/2;
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[i][j] = newMap3[i][j];
+                newMap[i][j] = origin[newR+ i][j];
             }
         }
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[i][newC+ j] =  newMap1[i][j];
+                newMap[i][newC+ j] =  origin[i][j];
             }
         }
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[newR+i][j] = newMap4[i][j];
+                newMap[newR+i][j] = origin[newR + i][newC +j];
             }
         }
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[newR+i][newC+ j] = newMap2[i][j];
+                newMap[newR+i][newC+ j] = origin[i][newC + j];
             }
         }
         return newMap;
@@ -156,45 +151,30 @@ public class Main {
         int curC = origin[0].length;
         int [][] newMap = new int [curR][curC];
 
-        int [][] newMap1 = deppCopyPart(origin, 0, curR/2-1, 0, curC/2-1);
-        int [][] newMap2 = deppCopyPart(origin, 0, curR/2-1, curC/2, curC-1);
-        int [][] newMap3 = deppCopyPart(origin, curR/2, curR-1, 0, curC/2-1);
-        int [][] newMap4 = deppCopyPart(origin, curR/2, curR-1, curC/2, curC-1);
-
         int newR = curR/2;
         int newC = curC/2;
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[i][j] = newMap2[i][j];
+                newMap[i][j] = origin[i][j+newC];
             }
         }
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[i][newC+ j] = newMap4[i][j];
+                newMap[i][newC+ j] = origin[newR+ i][newC+ j];
             }
         }
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[newR+i][j] = newMap1[i][j];
+                newMap[newR+i][j] = origin[i][j];
             }
         }
         for(int i=0; i<newR; i++){
             for(int j=0; j<newC; j++){
-                newMap[newR+i][newC+ j] = newMap3[i][j];
+                newMap[newR+i][newC+ j] = origin[newR + i][j];
             }
         }
         return newMap;
 
-    }
-
-    public static int[][] deppCopyPart(int [][] origin, int startR, int endR, int startC, int endC){
-        int [][] copy = new int[endR-startR+1][endC-startC+1];
-        for(int i=0; i<copy.length; i++){
-            for(int j=0; j<copy[0].length; j++){
-                copy[i][j] = origin[startR+ i][startC+j];
-            }
-        }
-        return copy;
     }
 
 }
