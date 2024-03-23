@@ -21,12 +21,18 @@ public class Main {
         y = Integer.parseInt(st.nextToken());
 
         nums = new int[2*n +1];
+        nums[x] = nums[y] = y-x-1;
 
         solution(n);
         System.out.println(count);
 
     }
     public static void solution(int n){
+        // x자리와 y자리는 이미 채워졌으니, 바로 패스
+        if(n == y-x-1){
+            solution(n-1);
+            return;
+        }
         if(n == 0){
             if(nums[x] == nums[y])
                 count++;
