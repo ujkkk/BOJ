@@ -6,8 +6,8 @@ import java.util.*;
 
 public class Main {
 
-    public static boolean [] isVisited;
-    public static int[][] graph;
+    public static List<Integer>[] graph;
+    public static int [][] graphMap;
     public static int [][] dp;
     public static int N, K, M;
     public static void main(String[] args) throws Exception {
@@ -20,8 +20,13 @@ public class Main {
         M = Integer.parseInt(st.nextToken()); // 최대 M개
         K = Integer.parseInt(st.nextToken()); // 개설된 항로의 개수
 
-        graph = new int[N+1][N+1];
+        graph = new ArrayList [N+1];
+        graphMap = new int[N+1][N+1];
         dp = new int[N+1][M+1];
+
+        for(int i=0; i<graph.length; i++){
+            graph[i] = new ArrayList<>();
+        }
 
         for(int i=0; i<K; i++){
             st = new StringTokenizer(br.readLine());
@@ -29,8 +34,19 @@ public class Main {
             int v2 = Integer.parseInt(st.nextToken());
             int cost = Integer.parseInt(st.nextToken());
 
-            if(graph[v1][v2] < cost)
-                graph[v1][v2] = cost;
+            if(v1 > v2)
+                continue;
+
+            if(graphMap[v1][v2] < cost)
+                graphMap[v1][v2] = cost;
+        }
+
+        for(int i=1; i<= N; i++){
+            for(int j=i+1; j<=N; j++){
+                if(graphMap[i][j] == 0)
+                    continue;
+                graph[i].add(j);
+            }
         }
         BFS();
 
@@ -53,15 +69,13 @@ public class Main {
             if(cur.count >= M)
                 continue;
 
-            for(int nextV = cur.vertex+1; nextV<=N; nextV++ ){
-                int cost = graph[cur.vertex][nextV];
-                if(cost == 0)
-                    continue;
+            for(int next : graph[cur.vertex]){
+                int cost = graphMap[cur.vertex][next];
 
-                if(dp[cur.vertex][cur.count] + cost > dp[nextV][cur.count+1]){
-                    dp[nextV][cur.count+1] = Math.max(dp[nextV][cur.count+1],
+                if(dp[cur.vertex][cur.count] + cost > dp[next][cur.count+1]){
+                    dp[next][cur.count+1] = Math.max(dp[next][cur.count+1],
                             dp[cur.vertex][cur.count] + cost);
-                    que.add(new Node(nextV, cur.count +1));
+                    que.add(new Node(next, cur.count +1));
                 }
 
             }
