@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,11 +15,13 @@ class Main {
     public static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
     public static int HORIZON = 0;
-    public static int DIAGONAL = 1;
-    public static int VERTICAL = 2;
+    public static int VERTICAL = 1;
+    public static int DIAGONAL = 2;
 
-    public int run () throws IOException {
+
+    public void run () throws IOException {
         int N = Integer.parseInt(br.readLine());
+        int [][][] isVisited = new int[N][N][3];
         int [][] map = new int[N][N];
 
         for(int i=0; i<N; i++){
@@ -27,133 +30,43 @@ class Main {
                 map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-         if(map[N-1][N-1] == 1){
-            return 0;
-        }
-        return getReachCount(N, map);
-    }
 
-    public int getReachCount(int N, int [][] map){
-        Queue<Pipe> que = new LinkedList<>();
-        boolean [][] isVisited = new boolean[N][N];
-        int count = 0;
+        isVisited[0][1][HORIZON] = 1;
 
-        que.add(new Pipe(new int[]{0,1}, HORIZON));
-        isVisited[0][1] = true;
+        for(int i=0; i<N; i++){
+            for(int j=1; j<N; j++){
+                if(i==0 && j<2)
+                    continue;
+                if(map[i][j] == 1)
+                    continue;
 
-
-        while(!que.isEmpty()){
-            Pipe cur = que.poll();
-
-
-            if(cur.point[0] == N-1 && cur.point[1] == N-1){
-                count++;
-                continue;
-            }
-
-            if(cur.dir == HORIZON){
-                if(connectHorizon(cur.point, map)){
-                    que.add(new Pipe(new int[]{cur.point[0], cur.point[1] + 1}, HORIZON));
+                // 대각선
+                if(i-1 >=0 && map[i-1][j-1] != 1 && map[i-1][j] != 1 && map[i][j-1] != 1){
+                    isVisited[i][j][DIAGONAL] = isVisited[i-1][j-1][HORIZON]
+                        + isVisited[i-1][j-1][VERTICAL]
+                        + isVisited[i-1][j-1][DIAGONAL];
+                }
+                // 세로
+                if(i-1 >=0 && map[i-1][j] !=1){
+                    isVisited[i][j][VERTICAL] = isVisited[i-1][j][VERTICAL]
+                        + isVisited[i-1][j][DIAGONAL];
                 }
 
-                if(connectDiagonal(cur.point, map)){
-                    que.add(new Pipe(new int[]{cur.point[0] + 1, cur.point[1] + 1}, DIAGONAL));
-                }
-            }
-            else if (cur.dir == VERTICAL){
-                if(connectVertical(cur.point, map)){
-                    que.add(new Pipe(new int[]{cur.point[0] + 1, cur.point[1]}, VERTICAL));
-                }
-
-                if(connectDiagonal(cur.point, map)){
-                    que.add(new Pipe(new int[]{cur.point[0] + 1, cur.point[1] + 1}, DIAGONAL));
-                }
-            }
-            else if (cur.dir == DIAGONAL){
-                if(connectHorizon(cur.point, map)){
-                    que.add(new Pipe(new int[]{cur.point[0], cur.point[1] + 1}, HORIZON));
-                }
-
-                if(connectVertical(cur.point, map)){
-                    que.add(new Pipe(new int[]{cur.point[0] + 1, cur.point[1]}, VERTICAL));
-                }
-
-                if(connectDiagonal(cur.point, map)){
-                    que.add(new Pipe(new int[]{cur.point[0] + 1, cur.point[1] + 1}, DIAGONAL));
+                // 가로
+                if(map[i][j-1] != 1){
+                    isVisited[i][j][HORIZON] = isVisited[i][j-1][HORIZON]
+                        + isVisited[i][j-1][DIAGONAL];
                 }
             }
         }
-        return count;
+        System.out.println(isVisited[N-1][N-1][VERTICAL] + isVisited[N-1][N-1][HORIZON] + isVisited[N-1][N-1][DIAGONAL]);
     }
 
-    public boolean connectHorizon(int [] point, int [][] map){
-        int nextR = point[0];
-        int nextC = point[1]  + 1;
-
-        // 유효 범위인지 체크
-        if(!isRange(nextR, nextC, map.length)){
-            return false;
-        }
-        // 인전 캅이 모두 빈칸인지 체크
-        if(map[nextR][nextC] == 1){
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean connectVertical(int [] point, int [][] map){
-        int nextR = point[0] + 1;
-        int nextC = point[1];
-
-        // 유효 범위인지 체크
-        if(!isRange(nextR, nextC, map.length)){
-            return false;
-        }
-        // 인전 캅이 모두 빈칸인지 체크
-        if(map[nextR][nextC] == 1){
-            return false;
-        }
-        return true;
-    }
-
-    public boolean connectDiagonal(int [] point, int [][] map){
-        int nextR = point[0] + 1;
-        int nextC = point[1] + 1;
-
-        // 유효 범위인지 체크
-        if(!isRange(nextR, nextC, map.length )|| map[nextR][nextC] == 1){
-            return false;
-        }
-        if(!isRange(nextR -1, nextC, map.length )|| map[nextR-1 ][nextC] == 1){
-            return false;
-        }
-        if(!isRange(nextR, nextC-1, map.length )|| map[nextR][nextC-1] == 1){
-            return false;
-        }
-        return true;
-    }
-
-    public boolean isRange(int x, int y, int n ){
-        if(x>=0 && x<n && y>=0 && y <n){
-            return true;
-        }
-        return false;
-    }
 
     public static void main(String[] args) throws IOException {
 
-        System.out.println(new Main().run());
+        new Main().run();
     }
 }
 
-class Pipe{
-    int [] point;
-    int dir;
-
-    public Pipe(int[] point, int dir) {
-        this.point = point;
-        this.dir = dir;
-    }
-}
 
