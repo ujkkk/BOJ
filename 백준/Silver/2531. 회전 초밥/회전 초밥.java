@@ -27,54 +27,59 @@ class Main {
             dishes[i] = Integer.parseInt(br.readLine());
         }
 
-        HashMap<Integer, Integer> eaten = new HashMap<>();
+        int [] eaten = new int[3001];
         boolean isBonus = false;
 
         int notEat = -1;
         int eat = -1;
 
+        int kind = 0;
         // 초기셋팅
         for(int i=0; i<k; i++){
             eat++;
-            eaten.put(dishes[eat], eaten.getOrDefault(dishes[eat], 0) +1);
+            eaten[dishes[eat]]++;
+            if(eaten[dishes[eat]] == 1){
+                kind++;
+            }
 
             // 보너스 초밥 체크
             if(dishes[eat] == c){
                 isBonus = true;
             }
         }
-        int max = isBonus? eaten.size(): eaten.size() +1;
+        int max = isBonus? kind: kind +1;
 
         int count = 0;
         while(count < N + k +2){
+            if(max == k+1){
+                break;
+            }
             count++;
 
             // 초밥 먹기
             eat = (eat+1)%N;
-            eaten.put(dishes[eat], eaten.getOrDefault(dishes[eat], 0) +1);
+            eaten[dishes[eat]]++;
+            if(eaten[dishes[eat]] == 1){
+                kind++;
+            }
             if(dishes[eat] == c){
                 isBonus = true;
             }
 
             // 먹은 초밥 빼기
             notEat = (notEat+1)%N;
-            int removeDish = dishes[notEat];
-            if(eaten.get(removeDish) == 1){
-                eaten.remove(removeDish);
+            eaten[dishes[notEat]]--;
+            if(eaten[dishes[notEat]] == 0){
+                kind--;
                 // 보너스 초밥 체크
-                if(removeDish == c){
+                if(dishes[notEat] == c){
                     isBonus = false;
                 }
             }
-            else{
-                eaten.put(removeDish, eaten.get(removeDish)-1);
-            }
 
             // 최대값 체크
-            max = Math.max(isBonus? eaten.size(): eaten.size() +1, max);
-            if(max == k+1){
-                break;
-            }
+            max = Math.max( isBonus? kind: kind +1, max);
+
         }
 
         System.out.println(max);
