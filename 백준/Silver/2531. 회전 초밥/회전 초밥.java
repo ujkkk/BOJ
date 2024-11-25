@@ -46,7 +46,7 @@ class Main {
         int max = isBonus? eaten.size(): eaten.size() +1;
 
         int count = 0;
-        while(count < N *2){
+        while(count < N + k +2){
             count++;
 
             // 초밥 먹기
