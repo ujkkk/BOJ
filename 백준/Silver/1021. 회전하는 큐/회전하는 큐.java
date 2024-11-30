@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,9 +19,9 @@ class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        List<Integer> nums = new ArrayList<>(N);
+        LinkedList<Integer> que = new LinkedList<>();
         for(int i=0; i<N; i++){
-            nums.add(i+1);
+            que.add(i+1);
         }
 
         List<Integer> finds = new ArrayList<>();
@@ -33,55 +33,30 @@ class Main {
         // 찾기
         int count = 0;
         for(int find : finds){
-            int idx = 0;
-            for(int num : nums){
-                if(num == find){
-                    break;
-                }
-                idx++;
-            }
-            if(nums.get(0) == find){
-                nums.remove(0);
+            int idx = que.indexOf(find);
+
+            if(que.get(0) == find){
+                que.poll();
                 continue;
             }
             int front = idx;
-            int back = nums.size() -idx +1;
+            int back = que.size() -idx +1;
 
             if(front < back){
-                while(nums.get(0) != find){
-                    int temp = nums.get(0);
-                    nums.remove(0);
-                    nums.add(temp);
+                while(que.get(0) != find){
+                    que.add(que.poll());
                     count++;
                 }
-//                System.out.print("뽑기전 ");
-//                print(nums);
-                nums.remove(0);
             }
             else{
-                int size = nums.size();
-                while(nums.get(size-1) != find){
-                    int temp = nums.get(size-1);
-                    nums.remove(size-1);
-                    nums.add(0, temp);
+                while(que.get(0) != find){
+                    que.addFirst(que.pollLast());
                     count++;
                 }
-                count++;
-//                System.out.print("뽑기전 ");
-//                print(nums);
-                nums.remove(size-1);
             }
-//            System.out.print("뽑은 후 ");
-//            print(nums);
+            que.poll();
         }
         bw.write(count+"\n");
         bw.flush();
-    }
-
-    public static void print(List<Integer> list){
-        for(int n : list){
-            System.out.print(n +" ");
-        }
-        System.out.println("\n");
     }
 }
