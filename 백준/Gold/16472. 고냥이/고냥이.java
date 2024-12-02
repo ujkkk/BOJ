@@ -22,10 +22,16 @@ class Main {
         // init
         int maxCount = 0;
         int curCount = 0;
-        HashMap<Character, Integer> set = new HashMap<>();
-        while(set.size() != N && end < str.length() -1){
+
+        int selectCount = 0;
+        int [] alphas = new int[27];
+
+        while(selectCount != N && end < str.length() -1){
             end++;
-            set.put(str.charAt(end), set.getOrDefault(str.charAt(end), 0) +1);
+            if(alphas[str.charAt(end)  -'a'] == 0){
+                selectCount++;
+            }
+            alphas[str.charAt(end) -'a']++;
             curCount++;
         }
 
@@ -33,25 +39,26 @@ class Main {
 
         while (end < str.length() -1){
             end++;
-            set.put(str.charAt(end), set.getOrDefault(str.charAt(end) , 0) +1);
+            if(alphas[str.charAt(end) -'a'] == 0){
+                selectCount++;
+            }
+            alphas[str.charAt(end) -'a']++;
             curCount++;
 
-            if(set.size() == N+1){
-                while(start < end && set.size() == N+1){
-                    char removeAlpha = str.charAt(start);
+            while(start < end && selectCount == N+1){
+                char removeAlpha = str.charAt(start);
 
-                    while(start < end && str.charAt(start) == removeAlpha){
-                        start++;
-                        curCount--;
-                        set.put(removeAlpha, set.get(removeAlpha) -1);
-                    }
-
-                    if(set.get(removeAlpha) == 0){
-                        set.remove(removeAlpha);
-                    }
+                while(start < end && str.charAt(start) == removeAlpha){
+                    start++;
+                    curCount--;
+                    alphas[removeAlpha -'a']--;
                 }
 
+                if(alphas[removeAlpha -'a'] == 0){
+                    selectCount--;
+                }
             }
+
             maxCount = Math.max(curCount, maxCount);
         }
 
