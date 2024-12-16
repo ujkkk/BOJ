@@ -29,8 +29,7 @@ class Main {
         }
 
         // 스도쿠 시작
-        sudoku(0);
-
+        sudoku(0, 0, 0);
 
         for(int i=0; i<9; i++){
             for(int j=0; j<9; j++){
@@ -41,24 +40,26 @@ class Main {
         bw.flush();
     }
 
-    private static boolean sudoku(int depth){
+    private static boolean sudoku(int depth, int r, int c){
         if(depth == 81){
             return true;
         }
 
-        int r = depth / 9; // 현재 행
-        int c = depth % 9; // 현재 열
-
-        if(map[r][c] != 0){
-            return sudoku(depth+1);
+        if(c == 9){
+            r = r+1;
+            c = 0;
         }
+
+        if(map[r][c] != 0)
+            return sudoku(depth+1, r, c+1);
 
         for(int p=1; p<=9; p++){
             if(!isOk(r, c, p))
                 continue;
 
             map[r][c] = p;
-            if(sudoku(depth+1)){
+
+            if(sudoku(depth+1, r, c+1)){
                 return true;
             }
             map[r][c] = 0;
@@ -69,12 +70,9 @@ class Main {
 
     private static boolean isOk(int r, int c, int n){
         // 한 블록에 내정된 숫자 확인
-        int set_row = (r / 3) * 3; // value가 속한 3x3의 행의 첫 위치
-        int set_col = (c / 3) * 3; // value가 속한 3x3의 열의 첫 위치
-
-        for (int i = set_row; i < set_row + 3; i++) {
-            for (int j = set_col; j < set_col + 3; j++) {
-                if (map[i][j] == n) {
+        for(int i= 0; i< 3; i++){
+            for(int j=0; j< 3; j++){
+                if(map[r/3 * 3 + i][c/3* 3 + j] == n){
                     return false;
                 }
             }
@@ -91,6 +89,5 @@ class Main {
         }
         return true;
     }
-
 }
 
