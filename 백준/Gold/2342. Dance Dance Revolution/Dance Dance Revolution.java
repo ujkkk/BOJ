@@ -1,25 +1,34 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.Iterator;
 
-public class Main {
+class Main {
+    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    static int [][] cost = {
+        {1, 2, 2, 2, 2},
+        {0, 1, 3, 4, 3},
+        {0, 3, 1, 3, 4},
+        {0, 4, 3, 1, 3},
+        {0, 3, 4, 3, 1}
+    };
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        ArrayList<Integer> query = new ArrayList<>();
 
-        while(true){
-            int tmp = Integer.parseInt(st.nextToken());
-            if(tmp == 0) break;
-            query.add(tmp);
+        String [] str = br.readLine().split(" ");
+        int n = str.length;
+        int [] nums = new int[n];
+
+        for(int i=0; i<n; i++){
+            nums[i] = Integer.parseInt(str[i]);
         }
-
-        int n = query.size();
-        int[][][] dp = new int[n+1][5][5];
-
-        for(int i = 0; i<n+1; i++){
+        // dp[순서][왼쪽][오른쪽] = 최소비용
+        int [][][] dp = new int[n][5][5];
+        for(int i = 0; i<n; i++){
             for(int j = 0; j<5; j++){
                 for(int k = 0; k<5; k++){
                     dp[i][j][k] = 2147483643;
@@ -29,33 +38,32 @@ public class Main {
 
         dp[0][0][0] = 0;
 
-        for(int i = 1; i<n+1; i++){
-            int next = query.get(i-1);
+        for(int i=0; i<n -1; i++){
+            int next = nums[i];
 
-            for(int j = 0; j<5; j++){
-                for(int k = 0; k<5; k++){
-                    if(next != k) dp[i][next][k] = Math.min(dp[i][next][k], dp[i-1][j][k] + distance(j, next));
-                    if(next != j) dp[i][j][next] = Math.min(dp[i][j][next], dp[i-1][j][k] + distance(k, next));
+            for(int left=0; left<5; left++){
+                for(int right=0; right<5; right++){
+                    // 왼쪽 발을 이동할 시 최솟값
+                    if(next != right)
+                        dp[i+1][next][right] = Math.min(dp[i+1][next][right], dp[i][left][right] + cost[left][next]);
+
+                    // 오른쪽 발을 이동할 시 최솟값
+                    if(next != left)
+                        dp[i+1][left][next] = Math.min(dp[i+1][left][next], dp[i][left][right] + cost[right][next]);
                 }
             }
         }
 
-        int min = Integer.MAX_VALUE;
-
+        int result = 2147483643;
         for(int j = 0; j<5; j++){
             for(int k = 0; k<5; k++){
-                min = Math.min(dp[n][j][k],min);
+                result = Math.min(dp[n-1][j][k], result);
             }
         }
 
-
-        System.out.println(min);
+        bw.write(result+"");
+        bw.flush();
     }
 
-    public static int distance(int before, int after){
-        if(before == after) return 1;
-        else if(before == 0) return 2;
-        else if(Math.abs(before-after) == 2) return 4;
-        else return 3;
-    }
 }
+
