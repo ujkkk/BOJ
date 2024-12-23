@@ -11,14 +11,15 @@ class Main {
     public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     public static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
+    public static int soloCount;
     public static void main(String[] args) throws IOException {
 
         int N = Integer.parseInt(br.readLine());
-        long [] nums = new long[N];
+        int [] nums = new int[N];
 
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i=0; i<nums.length; i++){
-            nums[i] = Long.parseLong(st.nextToken());
+            nums[i] = Integer.parseInt(st.nextToken());
         }
 
         Arrays.sort(nums);
@@ -26,7 +27,7 @@ class Main {
         long min = 4000000000L;
         long [] result = new long[3];
         for(int i=0; i< N-2; i++){
-            long a = nums[i]*(-1);
+            int a = nums[i]*(-1);
 
             long [] temp = solution(nums, a, i);
 
@@ -48,7 +49,7 @@ class Main {
         bw.flush();
     }
 
-    private static long[] solution(long [] nums, long find, int idx){
+    private static long[] solution(int [] nums, int find, int idx){
         long []  result = new long[3];
         long min = 4000000000L;
 
@@ -58,8 +59,8 @@ class Main {
         while(left < right){
 
             long cur = nums[left] + nums[right];
+
             long curMin = Math.abs(find - cur);
-            
             if(curMin < min){
                 min = curMin;
                 result[0] = min;
