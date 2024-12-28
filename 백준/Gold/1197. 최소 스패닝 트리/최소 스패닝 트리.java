@@ -52,7 +52,7 @@ class Main {
         isVisited[1] = true;
         count++;
         for(Edge next: edges[1]){
-            que.add(new Edge(next.v, next.cost));
+            que.add(next);
         }
 
         while(!que.isEmpty()){
@@ -74,7 +74,7 @@ class Main {
                 if(isVisited[next.v]){
                     continue;
                 }
-                que.add(new Edge(next.v, next.cost));
+                que.add(next);
             }
         }
 
