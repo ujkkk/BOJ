@@ -1,89 +1,101 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
+class Main {
+    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-public class Main {
-    static BufferedWriter bw;
-    static BufferedReader br;
-    static ArrayList<Edge> edges;
-    static int [] parent ;
+    public static int V;
+    public static  List<Edge>[] edges;
 
     public static void main(String[] args) throws IOException {
 
-        br = new BufferedReader(new InputStreamReader(System.in));
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
         StringTokenizer st = new StringTokenizer(br.readLine());
-        // 정점의 개수
-        int V = Integer.parseInt(st.nextToken());
-        // 간선의 개수
+
+        V = Integer.parseInt(st.nextToken());
         int E = Integer.parseInt(st.nextToken());
 
-        PriorityQueue<Edge> edges = new PriorityQueue<>(new Comparator<Edge>() {
-            @Override
-            public int compare(Edge o1, Edge o2) {
-                return o1.weight - o2.weight;
-            }
-        });
+        edges = new ArrayList[V+1];
 
+        for(int i=0; i<=V; i++){
+            edges[i] = new ArrayList<>();
+        }
+
+        // 그래프 완성
         for(int i=0; i<E; i++){
             st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            int weight = Integer.parseInt(st.nextToken());
+            int v1 = Integer.parseInt(st.nextToken());
+            int v2 = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
 
-            edges.add(new Edge(start, end, weight));
+            edges[v1].add(new Edge(v2, cost));
+            edges[v2].add(new Edge(v1, cost));
         }
 
-        // 유니온 파인트 배열
-        parent = new int[V+1];
-        for(int i=0; i<parent.length; i++){
-            parent[i] = i;
-        }
-        bw.write(MST(edges, V)+"");
-
-        bw.flush();
-        br.close();
-        bw.close();
-
+        System.out.println(MST());
     }
 
-
-    public static int find(int a){
-        if(parent[a] == a)
-            return a;
-
-        a = find(parent[a]);
-        return a;
-    }
-
-    public static int MST(PriorityQueue<Edge> edges, int N){
+    private static long MST(){
+        long cost = 0;
         int count = 0;
-        int result = 0;
 
-        while(count < N-1){
-            Edge cur = edges.poll();
-            int a = find(cur.start);
-            int b = find(cur.end);
-            if(a != b){
-                result += cur.weight;
-                parent[b] = a;
-                count++;
+        PriorityQueue<Edge> que = new PriorityQueue<>();
+        boolean [] isVisited = new boolean[V+1];
+
+        isVisited[1] = true;
+        count++;
+        for(Edge next: edges[1]){
+            que.add(new Edge(next.v, next.cost));
+        }
+
+        while(!que.isEmpty()){
+            Edge cur = que.poll();
+
+            if(isVisited[cur.v]){
+                continue;
             }
 
-        }
-        return result;
-    }
-}
-class Edge{
-    int start;
-    int end;
-    int weight;
+            isVisited[cur.v] = true;
+            cost += cur.cost;
+            count++;
 
-    Edge(int start, int end, int weight){
-        this.start = start;
-        this.end = end;
-        this.weight= weight;
+            if(count == V){
+                break;
+            }
+
+            for(Edge next: edges[cur.v]){
+                if(isVisited[next.v]){
+                    continue;
+                }
+                que.add(new Edge(next.v, next.cost));
+            }
+        }
+
+        return cost;
+    }
+
+
+}
+
+class Edge implements Comparable<Edge>{
+    int v;
+    int cost;
+
+    public Edge(int v, int cost) {
+        this.v = v;
+        this.cost = cost;
+    }
+
+    @Override
+    public int compareTo(Edge o){
+        return this.cost - o.cost;
     }
 }
 
