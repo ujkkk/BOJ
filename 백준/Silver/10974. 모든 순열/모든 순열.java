@@ -11,6 +11,7 @@ class Main {
     public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     public static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
+    static int count = 0;
 
     public static void main(String[] args) throws IOException {
 
@@ -20,24 +21,26 @@ class Main {
         for(int i=1; i<=N; i++){
             n *= i;
         }
-        List<String> result = new ArrayList<>();
+        int [][] result = new int[n][N];
 
-        getP(1, N, new int[N+1], new boolean[N+1], result);
+        getP(0, N, new int[N], new boolean[N+1], result);
 
-        for(String str : result){
-            bw.write(str+"\n");
+        for(int [] cur : result){
+           for(int i=0; i<cur.length; i++){
+               bw.write(cur[i] + " ");
+           }
+           bw.write("\n");
         }
         bw.flush();
 
     }
 
-    private static void getP(int depth, int size, int [] cur, boolean[] isSelect,  List<String> result){
-        if(depth == size +1){
-            StringBuilder sb = new StringBuilder();
-            for(int i=1; i < cur.length; i++){
-                sb.append(cur[i]).append(" ");
+    private static void getP(int depth, int size, int [] cur, boolean[] isSelect, int [][] result){
+        if(depth == size ){
+            for(int i=0; i<cur.length; i++){
+                result[count][i] = cur[i];
             }
-            result.add(sb.toString());
+            count++;
             return;
         }
 
