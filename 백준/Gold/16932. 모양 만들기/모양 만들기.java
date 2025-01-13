@@ -55,12 +55,13 @@ class Main {
         }
 
         // 개수 구하기
+        isVisited = new boolean[N][M];
         for(int i=0; i<N*M; i++){
             int r = i/M;
             int c = i%M;
 
             if(map[r][c] != 0){
-                combineShape(r, c, map[r][c]);
+                combineShape(r, c, map[r][c], isVisited);
             }
         }
 
@@ -68,7 +69,7 @@ class Main {
 
     }
 
-    private static void combineShape(int r, int c, int number){
+    private static void combineShape(int r, int c, int number, boolean[][] isVisited){
         // 상하좌우에 모양 바꿔보기
         for(int i=0; i<4; i++){
             int nr = r + dr[i];
@@ -82,6 +83,10 @@ class Main {
                 continue;
             }
 
+            if(isVisited[nr][nc]){
+                continue;
+            }
+            isVisited[nr][nc] = true;
             // 상하좌우에 인접한 모양이 있는지 확인
             int count = groutCount.get(number);
             HashSet<Integer> contains = new HashSet<>();
@@ -92,6 +97,7 @@ class Main {
                 if(nnr <0 || nnr >= N || nnc <0 || nnc >=M){
                     continue;
                 }
+
                 // 빈 칸이 아니고 다른 그룹일 때
                 int otherNumber = map[nnr][nnc];
                 if(map[nnr][nnc] != 0 && otherNumber != map[r][c] && !contains.contains(otherNumber)){
