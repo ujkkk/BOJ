@@ -26,14 +26,14 @@ class Main {
         Queue<int []> noSand = new LinkedList<>();
 
         for(int i=0; i<N; i++){
-            String [] str = br.readLine().split("");
+            String str = br.readLine();
             for(int j=0; j <M; j++){
-                if(str[j].equals(".")){
+                if(str.charAt(j) == '.'){
                     map[i][j] = 0;
                     noSand.add(new int[]{i,j});
 
                 }else{
-                    map[i][j] = Integer.parseInt(str[j]);
+                    map[i][j] = str.charAt(j) - '0';
                 }
             }
         }
@@ -43,8 +43,9 @@ class Main {
 
         while(!noSand.isEmpty()){
             int size = noSand.size();
-
+            boolean isChange = false;
             waveCount++;
+
             for(int i=0; i<size; i++){
                 int [] cur = noSand.poll();
 
@@ -62,8 +63,12 @@ class Main {
 
                     if(map[nr][nc] == 0){
                         noSand.add(new int[]{nr,nc});
+                        isChange = true;
                     }
                 }
+            }
+            if(!isChange){
+                break;
             }
         }
         System.out.println(waveCount -1);
