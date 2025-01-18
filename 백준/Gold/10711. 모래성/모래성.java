@@ -28,11 +28,12 @@ class Main {
         for(int i=0; i<N; i++){
             String [] str = br.readLine().split("");
             for(int j=0; j <M; j++){
-                try{
-                    map[i][j] = Integer.parseInt(str[j]);
-                }catch (NumberFormatException e){
+                if(str[j].equals(".")){
                     map[i][j] = 0;
                     noSand.add(new int[]{i,j});
+
+                }else{
+                    map[i][j] = Integer.parseInt(str[j]);
                 }
             }
         }
@@ -65,38 +66,7 @@ class Main {
                 }
             }
         }
-
         System.out.println(waveCount -1);
     }
-
-    private static int [][] copy(int [][] map){
-        int [][] copy = new int[map.length][map[0].length];
-
-        for(int i=0; i<N; i++){
-            for(int j=0; j<M; j++){
-                copy[i][j] = map[i][j];
-            }
-        }
-         return copy;
-    }
-
-    private static boolean isRemove(int r, int c){
-        int count = 0;
-
-        for(int i=0; i<dr.length; i++){
-            int nr = r + dr[i];
-            int nc = c + dc[i];
-
-            if(nr <0 || nr >= N || nc <0 || nc >=M){
-                continue;
-            }
-            if(map[nr][nc] != 0){
-                continue;
-            }
-            count++;
-        }
-        return count >= map[r][c]? true : false;
-    }
-
 }
 
