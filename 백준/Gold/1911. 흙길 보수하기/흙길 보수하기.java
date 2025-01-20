@@ -45,12 +45,10 @@ class Main {
                 if(end <= cur.start){
                     end = cur.start + L;
                 }
-                else if(end < cur.end){
+                else{
                     end = end + L;
                 }
-                //System.out.println(end-L +"에 널판지");
             }
-
         }
 
         System.out.println(boardCount);
