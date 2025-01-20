@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Main {
@@ -20,7 +21,7 @@ class Main {
         int N = Integer.parseInt(st.nextToken());
         int L = Integer.parseInt(st.nextToken());
 
-        List<Pool> polls = new ArrayList<>();
+        PriorityQueue<Pool> polls = new PriorityQueue<>();
 
         for(int i=0; i<N; i++){
             st = new StringTokenizer(br.readLine());
@@ -30,14 +31,11 @@ class Main {
             polls.add(new Pool(start, end));
         }
 
-        // start 위치에 대해서 오름차순 정렬
-        Collections.sort(polls);
-
         int boardCount = 0;
         int end = 0;
 
-        for(int i=0; i<N; i++){
-            Pool cur = polls.get(i);
+        while(!polls.isEmpty()){
+            Pool cur = polls.poll();
 
             while(end < cur.end){
                 // 새 널판지
