@@ -1,41 +1,79 @@
+import java.util.*;
+
 class Solution {
     public int solution(int[] diffs, int[] times, long limit) {
-        int answer = 100_000;
+        int answer = 0;
         
-        int start = 1;
-        int end = 100_002;
+        int max = 0;
+        int min = 1000_000;
         
-        while(start < end){
-            int level = (start + end) / 2;
-            //System.out.println("level: " + level);
+        // 데이터 저장
+        List<Puzzle> ps = new ArrayList();
+        for(int i=0; i<diffs.length; i++){
+            ps.add(new Puzzle(diffs[i], times[i]));
             
-            // 걸린 시간 구하기
+            max = Math.max(max, diffs[i]);
+            min = Math.min(min, diffs[i]);
+        }
+
+        
+        int left = min;
+        int right = max;
+        
+        while(left < right){
+            int mid = (left+right)/2;
+            // System.out.println("left: " + left);
+            // System.out.println("right: " + right);
+            // System.out.println("현재 레벨: " + mid);
+            // 현재 난이도로 돌려보기
             long sum = 0;
-            for(int i=0; i<diffs.length; i++){
-                // 풀 수 있음
-                if(diffs[i] <= level){
-                    sum += times[i];
-                }
-                // 틀림
-                else{
-                    int repeat = diffs[i] - level;
-                    sum +=  (times[i] + times[i-1])*repeat + times[i];
+            
+            int i;
+            int pre = 0;
+            for(i=0; i<diffs.length; i++){
+                if(sum > limit){
+                    break;
                 }
                 
+                Puzzle cur = ps.get(i);
+                if(cur.diff <= mid){
+                    sum += cur.time;
+                }
+                else{
+                    sum += ((cur.diff - mid)*(cur.time + pre) + cur.time);
+                }
+                pre = cur.time;
             }
-            // 제한 시간 내에 풀 수 있음
-            if(sum <= limit){
-                answer = Math.min(answer, level);
-                System.out.println("[O]" + level+"에서 풀 수 있음 : "+ sum);
-                end = level;
+            
+            // System.out.println("걸린 시간: " + sum);
+            if(sum > limit){
+                left = mid +1;
             }
-            // 풀 수 없음
             else{
-                start = level+1;
-                System.out.println("[X]" + level+"에서 풀 수 없음: " + sum);
+                right = mid;
             }
+            
+            // System.out.println("===================");
+        }
+        return right;
+    }
+}
+
+class Puzzle implements Comparable<Puzzle>{
+    int diff;
+    int time;
+    
+    public Puzzle(int diff, int time){
+        this.diff = diff;
+        this.time = time;
+    }
+    
+    @Override
+    public int compareTo(Puzzle p){
+        if(p.diff == this.diff){
+            return this.time - p.time;
         }
         
-        return answer;
+        return this.diff - p.diff;
     }
 }
