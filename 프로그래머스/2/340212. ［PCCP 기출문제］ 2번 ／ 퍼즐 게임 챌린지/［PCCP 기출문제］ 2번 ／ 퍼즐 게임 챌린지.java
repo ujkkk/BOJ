@@ -5,7 +5,7 @@ class Solution {
         int answer = 0;
         
         int max = 0;
-        int min = 1000_000;
+        int min = 1;
         
         // 데이터 저장
         List<Puzzle> ps = new ArrayList();
@@ -13,7 +13,6 @@ class Solution {
             ps.add(new Puzzle(diffs[i], times[i]));
             
             max = Math.max(max, diffs[i]);
-            min = Math.min(min, diffs[i]);
         }
 
         
@@ -22,9 +21,6 @@ class Solution {
         
         while(left < right){
             int mid = (left+right)/2;
-            // System.out.println("left: " + left);
-            // System.out.println("right: " + right);
-            // System.out.println("현재 레벨: " + mid);
             // 현재 난이도로 돌려보기
             long sum = 0;
             
@@ -44,8 +40,7 @@ class Solution {
                 }
                 pre = cur.time;
             }
-            
-            // System.out.println("걸린 시간: " + sum);
+                   
             if(sum > limit){
                 left = mid +1;
             }
@@ -53,7 +48,6 @@ class Solution {
                 right = mid;
             }
             
-            // System.out.println("===================");
         }
         return right;
     }
