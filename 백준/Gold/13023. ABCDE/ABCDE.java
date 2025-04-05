@@ -1,80 +1,62 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.regex.Matcher;
 
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static ArrayList<Integer>[] graph;
 
-public class Main {
-
-    static ArrayList<Integer>[] A;
-    static boolean [] visited;
-    static boolean result = false;
-    public static void main(String [] args) throws IOException{
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws IOException {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken()); // 정점의 수
-        int e = Integer.parseInt(st.nextToken()); // 간선의 수
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        A = new  ArrayList[n];
-        visited = new boolean [n];
-
-        // node
-        for(int i=0; i<n; i++){
-            A[i] = new ArrayList<Integer>();
+        // 모든 트리가 이어져 있는지 확인
+        graph = new ArrayList[N+1];
+        for(int i=0; i<graph.length; i++){
+            graph[i] = new ArrayList<Integer>();
         }
 
-        // edge
-        for(int i=0; i<e; i++){
+        for(int i=0; i<M; i++){
             st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
 
-            // 관계 추가
-            A[u].add(v);
-            A[v].add(u);
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+
+            graph[a].add(b);
+            graph[b].add(a);
         }
 
-        int count = 1;
-        for(int i=0; i<n; i++){
-            DFS(i, 1);
-            if(result)
-                break;
-        }
+        for(int i=0; i<N; i++){
+            boolean [] check = new boolean[N];
+            check[i] = true;
 
-       // DFS(0, 1);
-        if(result){
-            System.out.println("1");
-        }
-        else {
-            System.out.println("0");
-        }
-
-    }
-
-    static void DFS(int v, int count){
-       // System.out.println(count);
-        if(count == 5 || result){
-            result = true;
-            return;
-        }
-
-        if(visited[v])
-            return;
-
-        visited[v] = true;
-        for(int i : A[v]){
-            if(!visited[i]){
-                DFS(i, count+1);
+            if(dfs(N, 1, i, check)){
+                System.out.println(1+"\n");
+                return;
             }
-
         }
-        visited[v] = false;
-
+        System.out.println(0+"\n");
     }
 
+    private static boolean dfs(int N, int depth, int n, boolean [] check){
+        if(depth >= 5){
+            return true;
+        }
 
+        for(int next : graph[n]){
+            if(check[next])
+                continue;
 
-
+            check[n] = true;
+            if(dfs(N, depth+1, next, check)){
+                return true;
+            }
+            check[n] = false;
+        }
+        return false;
+    }
 }
