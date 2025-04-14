@@ -1,36 +1,38 @@
-import javax.sql.rowset.serial.SQLInputImpl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class Main {
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
     public static void main(String[] args) throws IOException {
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer stringTokenizer =
-                new StringTokenizer(bufferedReader.readLine());
-        int N = Integer.parseInt(stringTokenizer.nextToken());
-        int M = Integer.parseInt(stringTokenizer.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        // 구간 합 배열 선언
-        long [] S = new long[N+1];
-        stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-        S[0] = 0;
-
-        for(int i= 1; i<N+1; i++){
-            // 구간 합 구하기
-            S[i] = S[i-1] + Integer.parseInt(stringTokenizer.nextToken());
+        int [] nums = new int[N+1];
+        st = new StringTokenizer(br.readLine());
+        for(int i=1; i<=N; i++){
+            nums[i] = Integer.parseInt(st.nextToken());
         }
 
-        for(int p=0; p<M; p++){
-            stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-            int i = Integer.parseInt(stringTokenizer.nextToken());
-            int j = Integer.parseInt(stringTokenizer.nextToken());
-
-            System.out.println(S[j] - S[i-1]);
+        long [] sum = new long[N+1];
+        for(int i=1; i<=N; i++){
+            sum[i] = sum[i-1] + nums[i];
         }
+
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<M; i++){
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+
+            sb.append(sum[b] - sum[a-1]).append("\n");
+        }
+        System.out.println(sb);
 
     }
 }
