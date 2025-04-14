@@ -1,27 +1,28 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-public class Main {
-    public static void main(String[] args) {
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
 
-        // 과목 개수 N 입력 받기
-        int N = scanner.nextInt();
-        // 점수 배열 선언
-        int [] scores = new int[N];
-        for(int i = 0; i< N; i++){
-            scores[i] = scanner.nextInt();
+        int N = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int [] num = new int[N];
+        double max = 0;
+        for(int i=0; i<N; i++){
+            num[i] = Integer.parseInt(st.nextToken());
+            max = Math.max(max, num[i]);
         }
 
-        int nMax =0, sum = 0;
-        for(int i=0 ; i<N;i++){
-            if(scores[i] > nMax){
-                nMax = scores[i];
-            }
-            sum += scores[i];
+        // 평균구하기
+        double sum = 0;
+        for(int i=0; i<N; i++){
+            sum += (num[i]/max*100);
         }
-
-        // 결과 계산 후 출력
-        System.out.print(sum*100.0/nMax/N);
+        System.out.println(sum/N);
     }
 }
