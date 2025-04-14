@@ -1,25 +1,19 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-public class Main {
-    public static void main(String[] args) {
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        // 숫자의 개수 입력 받기
-        int N = 0;
-        Scanner scanner = new Scanner(System.in);
-        N = scanner.nextInt();
+    public static void main(String[] args) throws IOException {
 
-        // N자리 문자열 입력 받기
-        String sNum = null;
-        sNum = scanner.next();
+        int N = Integer.parseInt(br.readLine());
+        String [] str = br.readLine().split("");
 
-        // 문자 배열로 전환
-        char [] cNums = sNum.toCharArray();
-
-        int sum = 0;
-        for(int i=0; i< cNums.length; i++) {
-            sum += cNums[i] - '0';
+        int sum =0;
+        for(int i=0; i<str.length; i++){
+            sum += Integer.parseInt(str[i]);
         }
-        // 결과 출력
-        System.out.print(sum);
+        System.out.println(sum);
     }
 }
