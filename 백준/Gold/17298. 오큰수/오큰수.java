@@ -1,67 +1,55 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Scanner;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
-public class Main {
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		int N;
-		Stack<Integer> stack = new Stack<Integer>();
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(bf.readLine());
-		String [] str = bf.readLine().split(" ");
-		int A[] = new int[N];
-		int ans[] = new int[N];
-		int top =0;
-		for(int i =0; i<N; i++) {
-			A[i] = Integer.parseInt(str[i]);
-		}
-		
-		stack.push(0);
-		for(int index =0; index< N; index++) {  
-			top = index;
-			while(!stack.empty() && A[stack.peek()] < A[top]) {
-				//(A[stack.peek()] <= A[top])
-				ans[stack.pop()] = A[top];
-			}
-			
-			stack.push(index);
-		}
-//			top = index;
-//			//스택이 비어있거나 현재 원소가 A[top]보다 작을 때 -> 오큰수가 아니므로 현재 원소 push
-//			if(stack.empty() || A[index] < A[top]) {
-//				stack.push(index);
-//				top = index;
-//			}
-//			//스택이 비어있지 않고 현재원소가 A[top]보다 클 때 -> 현재 원소의 오큰수 발견
-//			else {
-//				int b = index;
-//				top = index;
-//				while(true) {
-//					if(!stack.empty()) {
-//						//b = stack.pop();
-//						if(A[stack.peek()] > A[top]) break;
-//						ans[stack.pop()] = A[top];
-//					}	
-//					else break;
-//				}
-//				stack.push(b);
-//			}
-//		}
-		while(!stack.empty()) {
-			ans[stack.pop()] = -1;
-		}
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		for(int i=0; i< ans.length; i++) {
-			bw.write(ans[i] + " ");
-		}
-		bw.write("\n");
-		bw.flush();
-	}
+    public static void main(String[] args) throws IOException {
+        int N = Integer.parseInt(br.readLine());
+        int [] nums = new int[N];
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for(int i=0 ;i<N; i++){
+            nums[i] = Integer.parseInt(st.nextToken());
+        }
+
+        Stack<Integer> stack = new Stack<>();
+        int [] NGE = new int[N];
+        for(int i=N-1; i>=0; i--){
+            if(stack.isEmpty()){
+                stack.add(nums[i]);
+                NGE[i] = -1;
+                continue;
+            }
+
+            while(true){
+                // 본인보다 큰게 없음
+                if(stack.isEmpty()){
+                    NGE[i] = -1;
+                    break;
+                }
+                // 본인보다 큰 거 찾음
+                if(stack.peek() > nums[i]){
+                    NGE[i] = stack.peek();
+                    break;
+
+                }
+                // 작은 것 다 빼기, 어차피 현재 요소가 우선순위가 되니 필요없음
+                stack.pop();
+            }
+
+            stack.add(nums[i]);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for(int nge: NGE){
+            sb.append(nge).append(" ");
+        }
+        System.out.println(sb);
+
+    }
 
 }
