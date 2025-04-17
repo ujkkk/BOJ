@@ -1,48 +1,55 @@
-
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
-public class Main {
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
+    public static void main(String[] args) throws IOException {
 
-	public static void main(String[] args) {
-		         
-		Scanner sc = new Scanner(System.in);
-		int N= sc.nextInt();
-		int [] n = new int[N];
-		int num = 1;
-		boolean result = true;
-		Stack<Integer> stack = new Stack<Integer>();
-		StringBuffer bf = new StringBuffer();
-		
-		for(int i=0;i <n.length; i++) {
-			n[i]= sc.nextInt();
-		}
-		
-		for(int i=0; i<n.length; i++) {
-			if(num <= n[i]) {
-				while(num <= n[i]) {
-					stack.push(num++);
-					bf.append("+\n");
-				}
-				stack.pop();
-				bf.append("-\n");
-			}
-			else {
-				int p = stack.pop();
-				if(p> n[i]) {
-					System.out.println("NO");
-					result = false;
-					break;
-				}
-				bf.append("-\n");
-			}
-		}
-		if(result) {
-			//모든 결과 출력
-			System.out.println(bf.toString());
-		}
-	}
-	
+        int N = Integer.parseInt(br.readLine());
+
+        int [] nums = new int[N];
+        for(int i=0; i<N; i++){
+            nums[i] = Integer.parseInt(br.readLine());
+        }
+
+        Stack<Integer> stack = new Stack<>();
+        StringBuilder sb = new StringBuilder();
+        int max = 0;
+
+        for(int n : nums){
+            if(max <= n){
+                while(max != n){
+                    stack.add(++max);
+                    sb.append("+\n");
+                }
+                stack.pop();
+                sb.append("-\n");
+            }
+
+            else{
+                if (max < n) {
+                    System.out.println("NO");
+                    return;
+                }
+                else{
+                    do{
+                        sb.append("-\n");
+                        if(stack.isEmpty()){
+                            System.out.println("NO");
+                            return;
+                        }
+                    } while (stack.pop() != n);
+                }
+            }
+        }
+
+        System.out.println(sb);
+    }
 
 }
