@@ -1,42 +1,29 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.StringTokenizer;
 
-public class Main {
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
     public static void main(String[] args) throws IOException {
-        // 문자열로 입력 받기
-        Scanner sc = new Scanner(System.in);
-        String sNum = sc.next();
 
-        // 숫자 배열로 만들기
-        char [] cNum = sNum.toCharArray();
-        int N = cNum.length;
-        int [] nums = new int[N];
+        String [] strN = br.readLine().split("");
 
-        for(int i=0; i< N; i++){
-            nums[i] = Character.getNumericValue(cNum[i]);
+        Integer [] nums = new Integer [strN.length];
+        for(int i=0; i<nums.length; i++){
+            nums[i] = Integer.parseInt(strN[i]);
         }
 
-        // 정렬 (선택 정렬)
-        for(int i=0; i < N-1; i++){
-            int max = i;
-            for(int j= i+1; j< N; j++){
-                if(nums[max] < nums[j])
-                    max = j;
-            }
-            if(max != i)
-                swap(i, max, nums);
-        }
+        Arrays.sort(nums, Collections.reverseOrder());
+        StringBuilder sb = new StringBuilder();
 
-        // 출력
-        for(int i=0; i< N; i++){
-            System.out.print(nums[i]);
+        for(int n : nums){
+            sb.append(n);
         }
-
+        System.out.println(sb);
     }
 
-    public static void swap(int first, int second, int [] array){
-        int temp = array[first];
-        array[first] = array[second];
-        array[second] = temp;
-    }
 }
