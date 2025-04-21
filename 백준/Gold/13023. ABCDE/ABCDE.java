@@ -1,62 +1,65 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
+
 
 class Main{
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    private static ArrayList<Integer>[] graph;
+    private static List<Integer> ans;
+    private static List<Integer>[] graph;
+
 
     public static void main(String[] args) throws IOException {
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        // 모든 트리가 이어져 있는지 확인
         graph = new ArrayList[N+1];
-        for(int i=0; i<graph.length; i++){
-            graph[i] = new ArrayList<Integer>();
+        for(int i=0; i<N+1; i++){
+            graph[i] = new ArrayList<>();
         }
 
         for(int i=0; i<M; i++){
             st = new StringTokenizer(br.readLine());
-
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-
-            graph[a].add(b);
-            graph[b].add(a);
+            int v = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            graph[v].add(w);
+            graph[w].add(v);
         }
 
-        for(int i=0; i<N; i++){
-            boolean [] check = new boolean[N];
-            check[i] = true;
-
-            if(dfs(N, 1, i, check)){
-                System.out.println(1+"\n");
+        for(int i=1; i<=N; i++){
+            boolean[] check = new boolean[N + 1];
+            check[i]  = true;
+            if(is5Depth(i, 1, check)){
+                System.out.println(1);
                 return;
             }
         }
-        System.out.println(0+"\n");
+        System.out.println(0);
     }
 
-    private static boolean dfs(int N, int depth, int n, boolean [] check){
-        if(depth >= 5){
+    public static boolean is5Depth(int n, int depth, boolean[] check){
+        if(depth == 5){
             return true;
         }
 
         for(int next : graph[n]){
-            if(check[next])
-                continue;
+            if(check[next]) continue;
 
-            check[n] = true;
-            if(dfs(N, depth+1, next, check)){
+            check[next] = true;
+            if(is5Depth(next, depth+1, check)){
                 return true;
             }
-            check[n] = false;
+            check[next] = false;
         }
         return false;
     }
+
+
+
 }
