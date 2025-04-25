@@ -1,38 +1,41 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
-class Main {
 
-    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    public static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static int ans = 0;
+    private static int N;
 
     public static void main(String[] args) throws IOException {
 
-        int N = Integer.parseInt(br.readLine());
-
+       // 작은거 두개를 합치면 됨, 하나가 될 때 까지
         PriorityQueue<Integer> que = new PriorityQueue<>();
 
-        for(int i=0;i<N; i++){
+        int N = Integer.parseInt(br.readLine());
+        for(int i=0; i<N; i++){
             que.add(Integer.parseInt(br.readLine()));
         }
 
-        // 작은거 두개씩 합치면 됨.
-        int count = 0;
+        long cnt = 0;
         while(que.size() != 1){
-            int card1 = que.poll();
-            int card2 = que.poll();
+            int n1 = que.poll();
+            int n2 = que.poll();
 
-            count += (card1 + card2);
-            
-            que.add((card1 + card2));
+            cnt += (n1+n2);
+
+            que.add((n1+n2));
         }
-        System.out.println(count);
+
+        System.out.println(cnt);
     }
 }
