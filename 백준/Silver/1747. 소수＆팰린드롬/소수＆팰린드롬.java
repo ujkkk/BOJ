@@ -2,58 +2,42 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 
-public class Main {
-
-
-    public static void main(String [] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws IOException {
         int N = Integer.parseInt(br.readLine());
-        int [] isPrime = new int[10000001];
-        for(int i=0; i< isPrime.length; i++){
-            isPrime[i] = i;
-        }
 
-        isPrime[0] = 0;
-        isPrime[1] = 0;
-        for(int i=2; i< Math.sqrt(isPrime.length); i++){
-            if(isPrime[i] == 0)
-                continue;
+        boolean[] X = new boolean[1_000_0000+1];
+        Arrays.fill(X, true);
+        X[1] = false;
 
-            for(int j=i*i; j< isPrime.length; j=i+j){
-                isPrime[j] = 0;
-            }
+        for(int i=2; i<(X.length); i++){
+            if(!X[i]) continue;
 
-        }
-
-        // 팰린드롬
-        for(int i = N; i< isPrime.length; i++){
-            if(i == 79197){
-                System.out.println("d");
-            }
-            if(isPrime[i] != 0){
-                if(isPalindrom(i)){
-
-                    System.out.println(i);
-                    break;
-                }
+            for (int j = i + i; j < X.length; j += i) {
+                X[j] = false;
             }
         }
 
-    }
+        for(int i=N; i<(1_000_0000); i++){
+            if(!X[i]) continue;
 
-    static boolean isPalindrom(int n){
-        char []  strN = String.valueOf(n).toCharArray();
-        int length = strN.length;
-        int i =0;
-        while(i < length/2){
-            if(strN[i] !=  strN[length-i-1])
-                break;
-            i++;
+            // 소수 일 때
+            char [] num = String.valueOf(i).toCharArray();
+            int j =0;
+            for(j=0; j<num.length/2; j++){
+                if(num[j] != num[num.length-1-j]) break;
+            }
+            if(j == num.length/2){
+                System.out.println(i);
+                return;
+            }
         }
-        if(i== length/2)
-            return true;
-        else
-            return false;
+
     }
 }
