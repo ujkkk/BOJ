@@ -26,13 +26,12 @@ class Main {
                 if(cur > max) break;
                 if(!A[(int)(cur-min)]) continue;
 
+                if(cur < min) continue;
                 A[(int)(cur-min)] = false;
+                cnt++;
             }
         }
 
-        for(int i=0; i<=max-min; i++){
-            if(A[i]) cnt++;
-        }
-        System.out.println(cnt);
+        System.out.println(max-min +1- cnt);
     }
 }
