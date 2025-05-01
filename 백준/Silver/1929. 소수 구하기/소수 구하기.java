@@ -1,62 +1,40 @@
-
-import java.io.*;
-import java.util.*;
-
-
-public class Main {
-	
-	public static BufferedWriter bw;
-	public static BufferedReader br;
-
-	static int N;
-	static int M;
-	static boolean [][] graph;
-
-	
-	public static void main(String[] args) throws Exception {
-		
-		br  = new BufferedReader(new InputStreamReader(System.in));
-		bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		M = Integer.parseInt(st.nextToken());
-		N = Integer.parseInt(st.nextToken());
-		
-		boolean isPrime [] = new boolean[N+1];
-		Arrays.fill(isPrime, true);
-		
-		boolean [] ans =prime(isPrime);
-		for(int i=M; i<=N; i++) {
-			if(isPrime[i])
-				bw.write(i+"\n");
-		}
-		
-		bw.flush();
-			
-	}
-	
-	public static boolean [] prime(boolean [] isPrime) {
-		isPrime[0] = false;
-		isPrime[1] = false;
-		
-		for(int i=2; i<= isPrime.length/2; i++) {
-			if(!isPrime[i])
-				continue;
-			isPrime[i] = true;
-			for(int j=i+i; j<=N; j=j+i){
-				isPrime[j] = false;
-			}
-		}
-		return isPrime;
-	}
-	
-	
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 
-	
+class Main{
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static int ans = 0;
+    private static int N;
+
+    public static void main(String[] args) throws IOException {
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        boolean [] A = new boolean[M+1];
+        Arrays.fill(A, true);
+
+        // 소수구하기
+        A[1] = false;
+        for(int i=2; i*i <= M; i++){
+            if(!A[i]) continue;
+
+            for(int j=i+i; j<=M; j+= i){
+                A[j] = false;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for(int i=N; i<=M; i++){
+            if(A[i]){
+                sb.append(i).append("\n");
+            }
+        }
+        System.out.println(sb);
+    }
 }
-
-
-
-
-
