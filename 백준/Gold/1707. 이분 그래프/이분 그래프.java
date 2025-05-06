@@ -1,88 +1,92 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
-import java.io.*;
-import java.util.*;
+class Main {
 
-public class Main {
+    static final int RED = 1;
+    static final int BLUE = -1;
+    public static int N, M, K, X;
+    public static List<Integer>[] graph;
+    public static ArrayList<Integer> result = new ArrayList<>();
+    public static ArrayList<Integer> maxVisited = new ArrayList<>();
+    public static int max = 0;
 
-    static BufferedWriter bw;
-    static BufferedReader br;
-    static ArrayList<Integer>[] graph;
-    static int [] color;
-
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     public static void main(String[] args) throws IOException {
 
-        br = new BufferedReader(new InputStreamReader(System.in));
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
+       int T = Integer.parseInt(br.readLine());
 
-        int K = Integer.parseInt(br.readLine());
-        for(int t=0; t<K; t++){
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int V = Integer.parseInt(st.nextToken());
-            int E = Integer.parseInt(st.nextToken());
+       for(int t=0; t<T; t++){
+           StringTokenizer st = new StringTokenizer(br.readLine());
+           int V = Integer.parseInt(st.nextToken());
+           int E = Integer.parseInt(st.nextToken());
 
-            graph = new ArrayList[V+1];
-            color = new int[V+1];
-            // 초기화
-            for(int i=1; i<=V; i++){
-                graph[i] = new ArrayList<>();
-                color[i] = -1;
-            }
+          graph = new ArrayList[V+1];
+           for(int i=0; i<=V; i++){
+               graph[i] = new ArrayList<>();
+           }
+           int start = 0;
+           for(int i=0; i<E; i++){
+               st = new StringTokenizer(br.readLine());
+               int a = Integer.parseInt(st.nextToken());
+               int b = Integer.parseInt(st.nextToken());
 
-            // 간선 입력
-            for(int i=0; i<E; i++){
-                st = new StringTokenizer(br.readLine());
-                int n = Integer.parseInt(st.nextToken());
-                int m = Integer.parseInt(st.nextToken());
+               graph[a].add(b);
+               graph[b].add(a);
 
-                graph[n].add(m);
-                graph[m].add(n);
-            }
+           }
 
-            // BFS 탐색으로 색깔 넣어주기
-            int i;
-            for( i=1; i<=V; i++){
-                // 해당 정점을 방문하지 않았다면 해당 정점을 포함하는 싸이클 탐색 시작
-                if(color[i] == -1){
-                    // 한 싸이클에 대해서 색상 지정
-                    if(!BFS(i,color))
+           int [] check = new int[V+1];
+           int i;
+           for(i=1; i<=V; i++){
+               if(check[i] == 0){
+                    if(!bfs(i, check)){
                         break;
+                    }
+               }
+              
+           }
 
-                }
-            }
-            if(i == V+1){
-                bw.write("YES\n");
-            } else{
-                bw.write("NO\n");
-            }
-        }
+           if(i == V+1){
+               System.out.println("YES");
 
-        bw.flush();
-        br.close();
-        bw.close();
+           }
+           else{
+               System.out.println("NO");
+
+           }
+
+       }
 
     }
 
-    public static boolean BFS(int start, int [] color){
-        color[start] = 0;
+
+    private static boolean bfs(int start, int [] check){
         Queue<Integer> que = new LinkedList<>();
         que.add(start);
+        check[start] = RED;
 
         while(!que.isEmpty()){
             int cur = que.poll();
-            int nextColor = color[cur] == 0? 1 : 0;
 
-            for(int child : graph[cur]){
-                if(color[child] == -1){
-                    color[child] = nextColor;
-                    que.add(child);
-                } else{
-                    if(color[cur] == color[child])
-                        return false;
+            for(int next : graph[cur]){
+                if(check[next] == check[cur]){
+                    return false;
+                }
+                if(check[next] == 0){
+                    check[next] = check[cur] == RED? BLUE : RED;
+                    que.add(next);
                 }
             }
         }
         return true;
     }
+
 }
-
-
