@@ -44,12 +44,13 @@ class Main {
         while(!que.isEmpty()){
             Integer [] cur = que.poll();
             visited.add(toInt(cur));
+
             if(cur[0] == 0){
                 if(capacity.contains(cur[2])) continue;
                 capacity.add(cur[2]);
             }
 
-            // A 물통이 비어있을 때
+            // A 물통이 꽉 차지 않을 때
             if(cur[0] != max[0]){
                 // B -> A
                 if(cur[1] != 0){
@@ -65,7 +66,7 @@ class Main {
                 }
             }
 
-            // B 물통이 비어있을 때
+            // B 물통이 꽉 차지 않을 때
             if(cur[1] != max[1]){
                 // A -> B
                 if(cur[0] != 0){
@@ -81,7 +82,7 @@ class Main {
                 }
             }
 
-            // C 물통이 비어있을 때
+            // C 물통이 꽉 차지 않을 때
             if(cur[2] != max[2]){
                 // B -> C
                 if(cur[1] != 0){
@@ -100,9 +101,11 @@ class Main {
 
         Integer[] array =  capacity.toArray(new Integer[0]);
         Arrays.sort(array);
+        StringBuilder sb = new StringBuilder();
         for(int i :array){
-            System.out.print(i+" ");
+            sb.append(i).append(" ");
         }
+        System.out.println(sb);
     }
     private static int toInt(Integer [] list){
         return list[0]*13 + list[1] *1300 + list[2]*130000;
