@@ -1,75 +1,69 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.Handler;
+class Main {
 
-public class Main {
-    static BufferedWriter bw;
-    static BufferedReader br;
-    static int [] root;
-
+    static int [] parent;
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     public static void main(String[] args) throws IOException {
 
-        br = new BufferedReader(new InputStreamReader(System.in));
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());// 1~n까지 원소
+        int M = Integer.parseInt(st.nextToken());   // 연산의 수;
 
-        root = new int [n+1];
-        // 처음 모든 루트는 자기 자신
-        for(int i=1; i<root.length; i++){
-            root[i] = i;
+        StringBuilder sb = new StringBuilder();
+        parent = new int[N+1];
+        for(int i=1; i<=N; i++){
+            parent[i] = i;
         }
-        for(int i=0; i<m; i++){
+
+        for(int i=0; i<M; i++){
             st = new StringTokenizer(br.readLine());
             int op = Integer.parseInt(st.nextToken());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            // union
             if(op == 0){
                 union(a,b);
-            }else{
-                // 같은 집합에 속하는지 체크
-                if(check(a,b))
-                    bw.write("YES\n");
-                else
-                    bw.write("NO\n");
+            }
+            else if(op == 1){
+                if(isSameSet(a, b)){
+                    sb.append("YES\n");
+                }
+                else{
+                    sb.append("NO\n");
+                }
             }
         }
-        bw.flush();
-        br.close();
-        bw.close();
-
+        System.out.println(sb);
     }
 
-    // union - 대표 노드끼리 연결하기
-    public static void union(int a, int b){
-        // a원소가 포함된 집합의 대표 원소를 찾음
+    private static boolean isSameSet(int a, int b){
         a = find(a);
         b = find(b);
-        // 같은 집합에 속하는지 체크
-        if(a==b)
-            return;
-        // 같은 집합이 아니라면 합치기 진행
-        // b 집합의 대표를 a 집합의 대표로
-        root[b] = a;
+
+        if(a == b){
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    public static int find(int a){
-        if(root[a] == a){
+    private static void union(int a, int b){
+        a = find(a);
+        b = find(b);
+
+        if(a != b){
+            parent[b] = a;
+        }
+    }
+
+    private static int find(int a){
+        if(parent[a] == a){
             return a;
         }
-        root[a] = find(root[a]);
-        return root[a];
-    }
-
-    public static boolean check(int a, int b){
-        if(find(a) == find(b))
-            return true;
-        return false;
+        return parent[a] = find(parent[a]);
     }
 }
-
