@@ -1,84 +1,63 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-import java.io.*;
-import java.util.*;
+class Main {
 
-public class Main {
-    static BufferedWriter bw;
-    static BufferedReader br;
-    static int N, M;
     static int [] parent;
-
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     public static void main(String[] args) throws IOException {
 
-        br = new BufferedReader(new InputStreamReader(System.in));
-        bw = new BufferedWriter(new OutputStreamWriter(System.out));
-
+        StringTokenizer st;
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
 
         parent = new int[N+1];
-        for(int i=1; i<parent.length; i++)
+        for(int i=0; i<=N; i++){
             parent[i] = i;
+        }
 
-        StringTokenizer st;
-        for(int r =1; r<=N; r++){
+        for(int i=1; i<=N; i++){
             st = new StringTokenizer(br.readLine());
-            for(int c =1; c<=N; c++){
-                int value = Integer.parseInt(st.nextToken());
-                if(c<r) continue;
-
-                if(value == 1)
-                    union(r,c);
+            for(int j=1; j<=N; j++){
+                int op = Integer.parseInt(st.nextToken());
+                if(op == 1){
+                    union(i, j);
+                }
             }
         }
-        // 여행 계획
         st = new StringTokenizer(br.readLine());
-        int start = Integer.parseInt(st.nextToken());
-        int rootParent = find(start);
-
-        boolean result = true;
-        while(st.hasMoreTokens()){
-            if(find(Integer.parseInt(st.nextToken())) != rootParent){
-                result = false;
-                break;
+        int pre = -1;
+        for(int i=0; i<M; i++){
+            if(i==0){
+                pre = Integer.parseInt(st.nextToken());
+                continue;
             }
+            int cur = Integer.parseInt(st.nextToken());
+            if(find(pre) != find(cur)){
+                System.out.println("NO");
+                return;
+            }
+            pre = cur;
         }
-        if(result)
-            bw.write("YES");
-        else
-            bw.write("NO");
-
-        bw.flush();
-        br.close();
-        bw.close();
-
+        System.out.println("YES");
     }
 
-    public static boolean checkSame(int a, int b){
-        if(find(a) == find(b))
-            return true;
-        return false;
-    }
 
-    public static void union(int a, int b){
+    private static void union(int a, int b){
         a = find(a);
         b = find(b);
 
-        if(a==b)
-            return;
-        parent[b] = a;
+        if(a != b){
+            parent[b] = a;
+        }
     }
 
-    public static int find(int a){
-        // 대표 노드 찾음
-        if(parent[a] == a)
+    private static int find(int a){
+        if(parent[a] == a){
             return a;
-
-        parent[a] = find(parent[a]);
-        return parent[a];
+        }
+        return parent[a] = find(parent[a]);
     }
-
-
-
 }
-
