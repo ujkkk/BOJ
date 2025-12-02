@@ -8,6 +8,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+/*
+    친구 점수 : 몇 사람을 건너야 모든 사람과 알게되는지 
+              -> 모든 노드를 돌기 위한 최장 거리가 몇이냐
+    회장 조건 : 친구 점수가 가장 작은 사람.
+    구현:
+        1. bfs(완탐 가능, 구현 쉬움)로 멤버마다 친구 점수 구함
+        2. 가장 작은 친구 점수 알아냄
+        3. 가장 작은 친구 점수 가지는 멤버 알아냄
+ */
 class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -35,17 +44,17 @@ class Main {
         }
         // 그래프 입력 끝
 
+        // 친구 점수 구함
         int [] points = new int[N+1];
         int minPoint = 101;
         for(int i=1; i<=N; i++){
-            // i 회원의 친구점수
+            // i 회원의 친구 점수
             int friendPoint = bfs(i);
-            // min 갱신
             minPoint = Math.min(minPoint, friendPoint);
             points[i] = friendPoint;
         }
 
-        // 출력 값 구하기
+        // 회장 후보의 점수와 후보의 수
         int ansCount = 0;
         List<Integer> ansMembers = new ArrayList<>();
 
