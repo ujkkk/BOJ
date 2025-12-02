@@ -34,14 +34,12 @@ class Main {
 
         // 최소거리 -> bfs 이용
         Queue<Point> que = new LinkedList<>();
-        boolean [][] isVisited = new boolean[N][M];
         int [][] count = new int[N][M];
 
         int [] dr = {-1, 0, 1, 0};
         int [] dc = {0, 1, 0, -1};
 
         que.add(new Point(0, 0));
-        isVisited[0][0] = true;
         count[0][0] = 1;
 
         while(!que.isEmpty()){
@@ -58,9 +56,8 @@ class Main {
                 if(nr < 0 || nr >= N || nc < 0 || nc >= M){
                     continue;
                 }
-                if(!isVisited[nr][nc] && map[nr][nc]){
+                if(count[nr][nc] == 0 && map[nr][nc]){
                     que.add(new Point(nr, nc));
-                    isVisited[nr][nc] = true;
                     // (nr,nc) 위치를 지나는 최소 칸 수
                     count[nr][nc] = count[cur.r][cur.c] + 1;
                 }
