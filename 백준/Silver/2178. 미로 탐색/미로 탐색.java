@@ -1,82 +1,84 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
-public class Main {
-    public static BufferedReader br;
 
-    public static boolean[][] maze;
-    public static boolean [][] isVisited;
-    public static int N;
-    public static int M;
-    public static int result;
+class Main {
 
-    public static void main(String [] args) throws IOException {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static boolean [][] map;
 
-        br = new BufferedReader(new InputStreamReader(System.in));
-        result = 1;
-        createMaze();
+    public static void main(String[] args) throws IOException {
 
-        Queue<Data> que = new LinkedList<>();
-        que.add(new Data(1,1, 1));
+        // 입력 시작
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        // 시계방향 (상부터)
-        List<Integer> dr = Arrays.asList(-1, 0, 1, 0);
-        List<Integer> dc = Arrays.asList(0,1,0,-1);
+        map = new boolean[N][M];
+
+        for(int i=0; i<N; i++){
+            String [] str = br.readLine().split("");
+            for(int j=0; j<M; j++){
+                if(str[j].equals("1")){
+                    map[i][j] = true;
+                }
+                else {
+                    map[i][j] = false;
+                }
+            }
+        } // 입력 끝
+
+        // 최소거리 -> bfs 이용
+        Queue<Point> que = new LinkedList<>();
+        boolean [][] isVisited = new boolean[N][M];
+        int [][] count = new int[N][M];
+
+        int [] dr = {-1, 0, 1, 0};
+        int [] dc = {0, 1, 0, -1};
+
+        que.add(new Point(0, 0));
+        isVisited[0][0] = true;
+        count[0][0] = 1;
 
         while(!que.isEmpty()){
-            Data curData = que.poll();
-            if(curData.row == N && curData.col == M){
-                result = curData.count;
+            Point cur = que.poll();
+            if(cur.r == N-1 && cur.c == M-1){
                 break;
             }
-            // 인접 노드 삽입
-            for(int i = 0; i< dr.size(); i++){
-                int curRow = curData.row + dr.get(i);
-                int curCol = curData.col + dc.get(i);
-                int curCount = curData.count;
-                if(maze[curRow][curCol] && !isVisited[curRow][curCol]){
-                    isVisited[curRow][curCol] = true;
-                    que.add(new Data(curRow, curCol, curCount+1));
+
+            for(int i=0; i<4; i++){
+                int nr = cur.r + dr[i];
+                int nc = cur.c + dc[i];
+
+                // 미로 범위 확인
+                if(nr < 0 || nr >= N || nc < 0 || nc >= M){
+                    continue;
+                }
+                if(!isVisited[nr][nc] && map[nr][nc]){
+                    que.add(new Point(nr, nc));
+                    isVisited[nr][nc] = true;
+                    // (nr,nc) 위치를 지나는 최소 칸 수
+                    count[nr][nc] = count[cur.r][cur.c] + 1;
                 }
             }
         }
+        System.out.println(count[N-1][M-1]+"");
 
-        System.out.println(result);
     }
 
-    public static void createMaze() throws IOException{
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
-        maze = new boolean[N+2][M+2];
-        isVisited = new boolean[N+2][M+2];
-
-        for(int r = 1; r <= N; r++){
-            String [] row = br.readLine().split("");
-            for(int c = 0; c<row.length; c++){
-                if(row[c].equals("1")){
-                    maze[r][c+1] = true;
-                }
-                else{
-                    maze[r][c+1] = false;
-                }
-            }
-        }
-    }
 }
 
-class Data{
-    int row;
-    int col;
-    int count;
+class Point {
+    int r;
+    int c;
 
-    public Data(int row, int col, int count){
-        this.row = row;
-        this.col = col;
-        this.count = count;
+    public Point(int r, int c) {
+        this.r = r;
+        this.c = c;
     }
 }
