@@ -2,76 +2,44 @@ import java.util.*;
 
 class Solution {
     public int solution(String dirs) {
-        int [] curPos = new int[2];
+        
+        int x = 5;
+        int y = 5;
+        
         HashSet<String> set = new HashSet();
-        
-        int ans = 0;
-        
         for(int i=0; i<dirs.length(); i++){
-            int [] nextPos = nextPos(curPos[0], curPos[1], dirs.charAt(i));
-            if(!isRange(nextPos)){
+            int [] next = next(x, y, dirs.charAt(i));
+            if(next[0] < 0 || next[0] > 10 || next[1] < 0 || next[1] > 10)
                 continue;
-            }
             
-            String str = numsToString(curPos, nextPos);
-            if(!set.contains(str)){
-                ans++;
-                set.add(str);
-            }
-            // 갱신
-            curPos[0] = nextPos[0];
-            curPos[1] = nextPos[1];
+            set.add(x+"" +y +"" + next[0] +"" + next[1]);
+            set.add(next[0]+"" +next[1]+"" + x +"" + y);
             
+            x = next[0];
+            y = next[1];
         }
-        return ans;
-    }
-    
-    public String numsToString(int [] curPos, int [] nextPos){
-        StringBuilder sb = new StringBuilder();
         
-        if(curPos[0] > nextPos[0]){
-            sb.append(nextPos[0]);
-            sb.append(curPos[0]);
-        } 
-        else{
-            sb.append(curPos[0]);
-            sb.append(nextPos[0]);
-        }
-            
-        if(curPos[1] > nextPos[1]){
-            sb.append(nextPos[1]);
-            sb.append(curPos[1]);
-        } 
-        else{
-            sb.append(curPos[1]);
-            sb.append(nextPos[1]);
-        }
-
-        return sb.toString();
+        return set.size()/2;
     }
     
-    public boolean isRange(int [] pos){
-        int r = pos[0];
-        int c = pos[1];
+    // 방향에 따른 좌표값 제공
+    public int [] next(int x, int y, char dir){
+        int [] dy = {1, 0, -1, 0};
+        int [] dx = {0, 1, 0, -1};
         
-        if(r > 5 || r < -5 || c >5 || c< -5){
-            return false;
-        }
-        return true;
-    }
-    
-    public int [] nextPos(int r, int c, char dir){
+        int d = 0;
         if(dir == 'U'){
-            return new int[]{r-1, c};
+            d = 0;
+        }
+        else if (dir == 'R'){
+            d = 1;
         }
         else if(dir == 'D'){
-            return new int[]{r+1, c};
+            d = 2;
         }
-        else if(dir == 'R'){
-            return new int[]{r, c+1};
+        else if(dir == 'L'){
+            d = 3;
         }
-        else{
-            return new int[]{r, c-1};
-        }
+        return new int[]{x+dx[d], y+dy[d]};
     }
 }
