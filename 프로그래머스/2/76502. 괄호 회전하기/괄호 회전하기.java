@@ -2,42 +2,54 @@ import java.util.*;
 
 class Solution {
     public int solution(String s) {
-        int count = 0;
+     
+        char [] chars = s.toCharArray();
+        int size = chars.length;
+        int count =0;
         
-        for(int start=0; start<s.length(); start++){
-            if(isCorrect(start, s)){
+        for(int i=0; i<size; i++){
+            // 괄호회전
+            char first = chars[0];
+            for(int j=0; j<size -1; j++){
+                chars[j] = chars[j+1];
+            }
+            chars[size-1] = first;
+            
+            // 검사
+            if(isCorrect(chars)){
                 count++;
             }
         }
         return count;
     }
     
-    public boolean isCorrect(int start, String s){
+    public boolean isCorrect(char [] chars){
         Stack<Character> stack = new Stack();
         
-        for(int i=0; i<s.length(); i++){
-            int idx = (start + i) % s.length();
-            
-            char cur = s.charAt(idx);
-            if(cur == '[' || cur == '(' || cur == '{'){
-                stack.add(cur);
+        for(int i=0; i<chars.length; i++){
+            if(chars[i] == '(' ||chars[i] == '[' || chars[i] == '{' ){
+                stack.add(chars[i]);
             }
-            else{
+            else {
                 if(stack.isEmpty()){
                     return false;
                 }
-                char pre = stack.pop();
-                if(cur == ']' && pre == '[') 
-                    continue;
-                else if(cur == ')' && pre == '(') 
-                    continue;
-                else if(cur == '}' && pre == '{') 
-                    continue;
                 
-                return false;
+                char cur = stack.pop();
+                if(cur == '(' && chars[i] != ')') {
+                     return false;
+                }
+                if(cur == '[' && chars[i] != ']') {
+                     return false;
+                }
+                if(cur == '{' && chars[i] != '}' ) {
+                     return false;
+                }
             }
         }
-        
-        return stack.isEmpty()? true : false;
+        if(!stack.isEmpty()){
+            return false;
+        }
+        return true;
     }
 }
