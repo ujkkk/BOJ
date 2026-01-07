@@ -1,140 +1,157 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
 
 public class Main {
-    public static int R;
-    public static int C;
-    public static int T;
-    public static int map[][];
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static int robotBottom;
+    static int R, C, T;
+    static int [][] map;
 
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int [] dr = {-1, 0, 1, 0};
+    static int [] dc = {0, 1, 0, -1};
+
+    static int [] airPos = new int[2];
+    public static void main(String[] args) throws IOException {
+
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         R = Integer.parseInt(st.nextToken());
         C = Integer.parseInt(st.nextToken());
         T = Integer.parseInt(st.nextToken());
 
         map = new int[R][C];
+        int idx=0;
 
-        // 미세먼지 정보 입력 받기
-        for(int i=0; i<R; i++){
+        for(int i=0;i<R; i++){
             st = new StringTokenizer(br.readLine());
             for(int j=0; j<C; j++){
                 map[i][j] = Integer.parseInt(st.nextToken());
                 if(map[i][j] == -1){
-                    robotBottom = i;
+                    airPos[idx++]= i;
                 }
             }
         }
 
+        run();
+
+        int sum =0;
+        for(int i=0; i<R; i++){
+            for(int j=0; j<C; j++){
+                sum+= map[i][j];
+            }
+        }
+        System.out.println(sum);
+    }
+
+    public static void run(){
         for(int t=0; t<T; t++){
             // 1. 미세먼지 확산
-            diffuseDusts();
-            // 2. 로봇청소기 공기 흡입
-            robotRun();
+            spreadDust();
+
+            // 2. 공기청정기 작동
+            air();
+            //printMap();
         }
-        
-        // 남아있는 미세먼지의 양
-        int sum = 0;
+    }
+
+    public static void air(){
+        int topR= airPos[0];
+        int bottomR = airPos[1];
+
+        int [][] temp = new int[R][C];
         for(int i=0; i<R; i++){
             for(int j=0; j<C; j++){
-                sum += map[i][j];
+                temp[i][j] = map[i][j];
             }
         }
-        System.out.println(sum+2);
-    }
-    public static void robotRun(){
-        int top = robotBottom -1;
-        for (int x = top - 1; x > 0; x--) {
-            map[x][0] = map[x - 1][0];
-        }
 
-        for (int y = 0; y < C - 1; y++) {
-            map[0][y] = map[0][y + 1];
-        }
+        // ->
+        map[topR][1] = 0;
+        for(int c=2; c<C; c++){
+            map[topR][c] = temp[topR][c-1];
 
-        for (int x = 0; x < top; x++) {
-            map[x][C - 1] = map[x + 1][C - 1];
         }
-
-        for (int y = C - 1; y > 1; y--) {
-            map[top][y] = map[top][y - 1];
+       // map[topR][C-1] = temp[topR][C-1];
+        for(int r=topR-1; r>=0; r--){
+            map[r][C-1] = temp[r+1][C-1];
         }
-        map[top][1] = 0;
-
-        // top은 반시계 방향으로 회전
-        for (int x = robotBottom +1; x < R-1; x++) {
-            map[x][0] = map[x+1][0];
+        // <-
+        for(int c=C-2; c>=0; c--){
+            map[0][c] = temp[0][c+1];
         }
-
-        for (int y = 0; y < C - 1; y++) {
-            map[R-1][y] = map[R-1][y + 1];
+        for(int r=1; r<topR; r++){
+            map[r][0] = temp[r-1][0];
         }
+        map[topR][0] = 0;
 
-        for (int x = R-1; x > robotBottom; x--) {
-            map[x][C - 1] = map[x - 1][C - 1];
+        // 아래 공기 청정기
+        // ->
+        map[bottomR][1] = 0;
+        for(int c=2; c<C; c++){
+            map[bottomR][c] = temp[bottomR][c-1];
         }
-
-        for (int y = C - 1; y > 1; y--) {
-            map[robotBottom][y] = map[robotBottom][y - 1];
+        for(int r=bottomR+1; r<R; r++){
+            map[r][C-1] = temp[r-1][C-1];
         }
-        map[robotBottom][1] = 0;
-
+        // <-
+        for(int c=C-2; c>=0; c--){
+            map[R-1][c] = temp[R-1][c+1];
+        }
+        for(int r=R-2; r > bottomR; r--){
+            map[r][0] = temp[r+1][0];
+        }
+        map[bottomR][0] = 0;
     }
 
-    public static void diffuseDusts(){
-        // 확산된 먼지를 저장할 배열
-        int newDust [][] = new int[R][C];
+    public static void printMap(){
+        System.out.println("=====================");
         for(int i=0; i<R; i++){
             for(int j=0; j<C; j++){
-                if(map[i][j] > 0){
-                    // 현재 칸에 미세먼지가 있다면 확산 시작
-                    diffuseDust(i, j ,newDust);
+                System.out.print(map[i][j] +" ");
+            }
+            System.out.println();
+        }
+        System.out.println("=====================");
+    }
+
+    public static void spreadDust(){
+        // 동시에 진행된다는 점을 고려해서 연산 결과를 따로 저장하고, 한 번에 반영함
+        int [][] temp = new int[R][C];
+
+        for(int i=0; i<R; i++){
+            for(int j=0; j<C; j++){
+                if(map[i][j] == 0) continue;
+                int spread = map[i][j]/5;
+                int count = 0;
+
+                for(int d=0;d<4; d++){
+                    int nr = i + dr[d];
+                    int nc = j + dc[d];
+
+                    if(nr < 0 || nr >=R || nc <0 || nc >=C){
+                        continue;
+                    }
+                    if(map[nr][nc] == -1){
+                        continue;
+                    }
+                    // 인접 칸들에 추가한다.
+                    count++;
+                    temp[nr][nc] += spread;
                 }
+                // 날아간 양만큼 빼줌
+                temp[i][j] -= (count*spread);
             }
         }
-        // 확산된 먼지의 양을 map에 반영
-        for(int i=0; i<R; i++) {
-            for (int j = 0; j < C; j++) {
-                map[i][j] += newDust[i][j];
+
+        // 결과 반영
+        for(int i=0; i<R; i++){
+            for(int j=0; j<C; j++){
+                map[i][j] += temp[i][j];
             }
         }
+
     }
 
-    public static void diffuseDust(int r, int c, int [][] newDust){
-        int [] dr ={-1,0, 1, 0};
-        int [] dc = {0, 1, 0, -1};
-        int count = 0;
-        // 상하좌우 확인
-        for(int i=0; i<dr.length; i++){
-            int newR = r + dr[i];
-            int newC = c + dc[i];
-            if(isRange(newR, newC) && map[newR][newC] != -1){
-                count++;
-                newDust[newR][newC] += map[r][c]/5;
-            }
-        }
-        // 확산된 양만큼 미세먼지 양 줄이기
-        map[r][c] = map[r][c] - ((map[r][c]/5)*count);
-    }
-
-    public static boolean isRange(int r, int c){
-        if(r>=0 && r<R && c>=0 && c<C)
-            return true;
-        return false;
-    }
 }
-
-class Point{
-    int r;
-    int c;
-    public Point(int r, int c){
-        this.r = r;
-        this.c = c;
-    }
-}
-
