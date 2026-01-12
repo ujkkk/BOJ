@@ -61,11 +61,11 @@ public class Main {
         }
 
         if(isAttacking){
-            if(attackCount < 8){
-                System.out.println("CHECK");
+            if(attackCount == 8){
+                System.out.println("CHECKMATE");
             }
             else{
-                System.out.println("CHECKMATE");
+                System.out.println("CHECK");
             }
         }
         else{
@@ -85,10 +85,7 @@ public class Main {
         if(kingC == queenC){
             return true;
         }
-        if(kingR -queenR == kingC-queenC){
-            return true;
-        }
-        if(kingR-queenR == (-1)*(kingC-queenC)){
+        if(Math.abs(kingR -queenR)  == Math.abs(kingC-queenC)){
             return true;
         }
         return false;
