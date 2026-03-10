@@ -1,70 +1,57 @@
-import java.awt.*;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 
 public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String [] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        Graph graph = new Graph(n+1);
-        int edgeCount = Integer.parseInt(br.readLine());
+    static int N;
+    static ArrayList<Integer>[] graph;
+    public static void main(String[] args) throws IOException {
 
-        for(int i=0; i< edgeCount; i++){
+        N = Integer.parseInt(br.readLine());
+        graph = new ArrayList[N+1];
+        for(int i=0; i< graph.length; i++){
+            graph[i] = new ArrayList();
+        }
+
+        // 네트워크 연결
+        int M = Integer.parseInt(br.readLine());
+        for(int m=0; m<M; m++){
             StringTokenizer st = new StringTokenizer(br.readLine());
             int v = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
-            graph.addEdge(v,w);
-
+            graph[v].add(w);
+            graph[w].add(v);
         }
 
-        System.out.println(graph.BFS(1));
-
+        // 탐색
+        System.out.println(bfs());
     }
 
+    static int bfs(){
+        boolean [] isVisited = new boolean[N+1];
+        Queue<Integer> que = new ArrayDeque<>();
+        int cnt = 0;
 
-}
-class Graph{
-    int v;
-    LinkedList []  adj;
+        que.add(1);
+        isVisited[1] = true;
 
-    Graph(int v){
-        this.v = v;
-        adj = new LinkedList[v];
-        for(int i=0; i<v; i++){
-            adj[i] = new LinkedList();
-        }
-    }
+        while(!que.isEmpty()){
+            int cur = que.poll();
+            cnt++;
 
-    void addEdge(int v, int w){
-        if(!adj[v].contains(w))
-            adj[v].add(w);
-        if(!adj[w].contains(v))
-            adj[w].add(v);
-    }
+            for(int next : graph[cur]){
+                if(isVisited[next]) continue;
 
-    int BFS(int value){
-        int count = 0;
-        boolean [] visited = new boolean[v];
-        LinkedList<Integer> queue = new LinkedList<Integer>();
-
-        visited[value] = true;
-        queue.add(value);
-
-        while(!queue.isEmpty()){
-            int s = queue.poll();
-            Iterator<Integer> iterator = adj[s].iterator();
-            while (iterator.hasNext()){
-                int n = iterator.next();
-                if(!visited[n]){
-                    count++;
-                    queue.add(n);
-                    visited[n]= true;
-                }
+                isVisited[next] = true;
+                que.add(next);
             }
         }
-        return count;
+        return cnt-1;
     }
-}
 
+}
