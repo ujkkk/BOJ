@@ -1,45 +1,50 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Scanner;
 
-class Main {
-    public static void main(String args[]) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    static int [][] dp = new int[41][2];
+
+    static int cnt = 0;
+    public static void main(String[] args) throws IOException {
+        fibonacci(40);
 
         int T = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
-        Point [] dp = new Point[41];
-        dp[0] = new Point(1,0);
-        dp[1] = new Point(0,1);
-        dp[2] = new Point(1,1);
-
-        for(int i=3; i<=40; i++){
-            dp[i] = new Point(dp[i-1].count0 + dp[i-2].count0,
-                    dp[i-1].count1 + dp[i-2].count1);
-        }
-        for(int i=0; i<T; i++){
+        for(int t=0; t<T; t++){
             int n = Integer.parseInt(br.readLine());
-            bw.write(dp[n].count0 + " " + dp[n].count1 +"\n");
+            sb.append(dp[n][0]).append(" ").append(dp[n][1]).append("\n");
         }
 
-        bw.flush();
-
-        bw.close();
-        br.close();
+        System.out.println(sb);
     }
 
 
-}
+    static void fibonacci(int n){
+        cnt++;
+        if(n ==0){
+            dp[n][0] = 1;
+        }
+        else if(n==1){
+            dp[n][1] = 1;
+        }
+        else{
+            if(dp[n-1][0] == 0){
+                fibonacci(n-1);
+            }
+            if(dp[n-2][0] == 0){
+                fibonacci(n-2);
+            }
 
-class Point{
-    int count0;
-    int count1;
-
-    public Point(int count0, int count1){
-        this.count0 = count0;
-        this.count1 = count1;
+            dp[n][0] = dp[n-1][0] + dp[n-2][0];
+            dp[n][1] = dp[n-1][1] + dp[n-2][1];
+        }
     }
+
 }
